@@ -64,9 +64,9 @@ function PhysicsPlatform(){
 		if ( this.x < 0 ){
 			this.velocity.x = 0;
 			this.x = 0;
-		} else if ( this.x > game.width - this.w ){
+		} else if ( this.x > game.width - this.w + 1000 ){
 			this.velocity.x = 0;
-			this.x = game.width - this.w;
+			this.x = game.width - this.w + 1000;
 		}
 		if ( this.y > game.height - this.h ){
 			this.velocity.y = 0;
