@@ -48,10 +48,34 @@ function ObjUpdatePlayer(){
 
 function Player(x,y){
 	ObjActive.call( this, x,y,87,87 );
+	PhysicsPlatform.call(this);
 	this.update = ObjUpdatePlayer;
 	this.draw = ObjDraw;
+
 	this.clear = ObjClear;
 	this.name = 'player';
+	// TEST STUFF
+	this.update = platformUpdate;
+	this.draw = testDraw;
+	this.clear = ObjClear;
+}
+
+// THIS IS FOR TESTING
+function platformUpdate(){
+	setLastPosition(this);
+	// These functions are in physicsPlatformer.js
+	this.setDirection();
+	this.screenEdgeCheck();
+	this.applyGravity();
+	this.inputCheck();
+	
+	// Move
+	this.x += this.velocity.x;
+	this.y += this.velocity.y;
+}
+function testDraw(){
+	game.context.fillStyle = 'red';
+	game.context.fillRect(this.x, this.y, this.w, this.h);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -70,7 +94,7 @@ game.init = function(ctx){
 	game.height = canvas.height;
 	game.context = ctx;
 	keyListener();
-	game.addEntity( new Player(512,500) );
+	game.addEntity( new Player(100,100) );
 }
 
 ASSET_MANAGER.downloadAll(function(){ 
