@@ -62,6 +62,7 @@ function Player(x,y){
 
 // THIS IS FOR TESTING
 function platformUpdate(){
+	gamepadUpdate();
 	setLastPosition(this);
 	// These functions are in physicsPlatformer.js
 	this.setDirection();
