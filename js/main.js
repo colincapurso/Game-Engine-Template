@@ -75,7 +75,7 @@ game.init = function(ctx){
 	game.context = ctx;
 	keyListener();
 	game.addEntity( new Player(400,300) );
-	// game.camera = { x: game.width/2, y: game.height/2, obj: game.entities[0] };
+	game.camera = { x: game.width/2, y: game.height/2, obj: game.entities[0] };
 }
 
 ASSET_MANAGER.downloadAll(function(){ 
