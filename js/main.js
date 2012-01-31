@@ -48,55 +48,14 @@ function ObjUpdatePlayer(){
 
 function Player(x,y){
 	ObjActive.call( this, x,y,87,87 );
-	PhysicsPlatform.call(this);
 	this.update = ObjUpdatePlayer;
 	this.draw = ObjDraw;
-
 	this.clear = ObjClear;
 	this.name = 'player';
+	
 	// TEST STUFF
-	this.update = platformUpdate;
-	this.draw = testDraw;
-	this.clear = ObjClear;
-	this.camera = { x: 512, y: 280 };
-}
-
-// THIS IS FOR TESTING
-function platformUpdate(){
-	setLastPosition(this);
-	// These functions are in physicsPlatformer.js
-	this.setDirection();
-	this.screenEdgeCheck();
-	this.applyGravity();
-	this.inputCheck();
-	
-	// Move
-	this.x += this.velocity.x;
-	this.y += this.velocity.y;
-	document.getElementById('output').innerHTML = 'x: ' + this.x + '<br/>y: ' + this.y;
-}
-function testDraw(){
-	game.context.clearRect(0,0,1024,480);
-
-	game.context.save();
-	game.context.translate(-this.x + this.camera.x - this.w, -this.y + this.camera.y);
-	for (var i=-50; i < 500; i++){
-		// Background 
-		game.context.fillStyle = 'green';
-		game.context.fillRect(i*50, 0, 5, 480);
-	}
-	// Ground
-	game.context.fillStyle = 'green';
-	game.context.fillRect(-2500, 480, 25000, 80);
-	// Wall
-	game.context.fillStyle = 'green';
-	game.context.fillRect(-100, 0, 100, 480);
-	game.context.fillRect(game.width + 1000, 0, 100, 480);
-	
-	game.context.fillStyle = 'red';
-	game.context.fillRect(this.x, this.y, this.w, this.h);
-	
-	game.context.restore();
+	// MovePlatform.call(this); // Scrolling Platformer
+	Move8Dir.call(this); // Overrides Update and adds a bunch of things
 }
 
 ////////////////////////////////////////////////////////////////

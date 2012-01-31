@@ -1,4 +1,4 @@
-function PhysicsPlatform(){
+function MovePlatform(){
 	this.velocity = { x: 0, y: 0 };
 	this.maxVelocity = { x: 20, y: 30 }; // this.maxVelocity.y == jump power
 	this.acceleration = { x: 0.5 };
@@ -18,30 +18,26 @@ function PhysicsPlatform(){
 		}
 	};
 
-	this.moveRight = function(){
-		// Pressing Right
-		if ( this.velocity.x < 0 ){
-			this.velocity.x += this.decceleration.x;
-		} else if ( this.velocity.x < this.maxVelocity.x ){
-			this.velocity.x += this.acceleration.x;
-			if ( this.velocity.x > this.maxVelocity.x ){
-				this.velocity.x = this.maxVelocity.x;
+	this.move = function(dir){
+		var v = this.velocity.x * dir;
+		var a = this.acceleration.x;
+		var d = this.decceleration.x;
+		var maxv = this.maxVelocity.x;
+		
+		if (dir != 0){
+			if ( v < 0 ){
+				v += d;
+			} else if ( v < maxv ){
+				v += a;
+				if ( v > maxv ){
+					v = maxv;
+				}
 			}
 		}
+
+		this.velocity.x = v * dir;
 	};
 	
-	this.moveLeft = function(){
-		// Pressing Left
-		if ( this.velocity.x > 0 ){
-			this.velocity.x -= this.decceleration.x;
-		}	else if ( this.velocity.x > -this.maxVelocity.x ) {
-			this.velocity.x -= this.acceleration.x;
-			if ( this.velocity.x  < -this.maxVelocity.x ){
-				this.velocity.x = -this.maxVelocity.x;
-			}
-		}
-	};
-
 	this.jump = function(){
 		// Pressing Jump
 		if ( this.state == 'isLanded' || this.state == 'isMoving' ){
@@ -87,9 +83,9 @@ function PhysicsPlatform(){
 	this.inputCheck = function(){
 		// Left / Right
 		if ( isKeyDown('right') ){
-			this.moveRight();
+			this.move(1);
 		} else if ( isKeyDown('left') ){
-			this.moveLeft();
+			this.move(-1);
 		} else {
 			this.applyGroundFriction();
 		}
@@ -99,6 +95,50 @@ function PhysicsPlatform(){
 			this.jump();
 		}
 	};
+	
+	this.update = function(){
+		setLastPosition(this);
+		// These functions are in physicsPlatformer.js
+		this.setDirection();
+		this.screenEdgeCheck();
+		this.applyGravity();
+		this.inputCheck();
+		
+		// Move
+		this.x += this.velocity.x;
+		this.y += this.velocity.y;
+		document.getElementById('output').innerHTML = 'x: ' + this.x + '<br/>y: ' + this.y;
+	};
+	
+	this.draw = function(){
+		game.context.clearRect(0,0,1024,480);
+
+		var c = {
+			x: -this.x + this.camera.x - this.w,
+			y: -this.y + this.camera.y
+		};
+		game.context.save();
+		game.context.translate( c.x, c.y );
+		for (var i=-50; i < 500; i++){
+			// Background 
+			game.context.fillStyle = 'green';
+			game.context.fillRect(i*50, 0, 5, 480);
+		}
+		// Ground
+		game.context.fillStyle = 'green';
+		game.context.fillRect(-2500, 480, 25000, 80);
+		// Wall
+		game.context.fillStyle = 'green';
+		game.context.fillRect(-100, 0, 100, 480);
+		game.context.fillRect(game.width + 1000, 0, 100, 480);
+		
+		game.context.fillStyle = 'red';
+		game.context.fillRect(this.x, this.y, this.w, this.h);
+		
+		game.context.restore();
+	};
+	
+	this.camera = { x: 512, y: 280 };
 }
 
 // Platform Options
