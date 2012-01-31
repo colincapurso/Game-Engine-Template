@@ -3,7 +3,7 @@ function Move8Dir(){
 	this.maxVelocity = { x: 20, y: 20 };
 	this.acceleration = { x: 0.5, y: 0.5 };
 	this.decceleration = { x: 0.5, y: 0.5 };
-	this.friction = { x: 0.5, y: 0.5 };
+	this.friction = { x: 0.7, y: 0.7 };
 	this.dir = { x:0, y:0 };
 	
 	this.setDirection = function(){
@@ -66,6 +66,11 @@ function Move8Dir(){
 	this.applyGroundFriction = function(x,y){
 		this.velocity.x -= (this.friction.x * this.dir.x) * x;
 		this.velocity.y -= (this.friction.y * this.dir.y) * y;
+		
+		// Bug fix, stop sliding because of number rounding
+		var t = 0.5; // tolerance
+		if ( this.velocity.x != 0 && this.velocity.x > -t && this.velocity.x < t ){ this.velocity.x = 0; }
+		if ( this.velocity.y != 0 && this.velocity.y > -t && this.velocity.y < t ){ this.velocity.y = 0; }
 	};
 
 	this.inputCheck = function(){
