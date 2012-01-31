@@ -100,6 +100,12 @@ function Move8Dir(){
 	};
 	
 	this.draw = function(){
+		for (var i=-50; i < 500; i++){
+			// Background 
+			game.context.fillStyle = 'green';
+			game.context.fillRect(i*50, 0, 5, 1000);
+			game.context.fillRect(0, i*50, 1000, 5);
+		}
 		game.context.fillStyle = 'red';
 		game.context.fillRect(this.x, this.y, this.w, this.h);
 	};

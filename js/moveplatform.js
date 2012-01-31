@@ -111,14 +111,6 @@ function MovePlatform(){
 	};
 	
 	this.draw = function(){
-		game.context.clearRect(0,0,1024,480);
-
-		var c = {
-			x: -this.x + this.camera.x - this.w,
-			y: -this.y + this.camera.y
-		};
-		game.context.save();
-		game.context.translate( c.x, c.y );
 		for (var i=-50; i < 500; i++){
 			// Background 
 			game.context.fillStyle = 'green';
@@ -134,11 +126,8 @@ function MovePlatform(){
 		
 		game.context.fillStyle = 'red';
 		game.context.fillRect(this.x, this.y, this.w, this.h);
-		
-		game.context.restore();
 	};
 	
-	this.camera = { x: 512, y: 280 };
 }
 
 // Platform Options

@@ -37,9 +37,11 @@ function GameEngine(){
 	};
 	
 	this.draw = function(){
+		cameraStart();
 		for (var i=0; i<this.entities.length; i++){
 			this.entities[i].draw(this.context);
 		}
+		cameraRestore();
 	};
 	
 	this.addEntity = function(entity){
