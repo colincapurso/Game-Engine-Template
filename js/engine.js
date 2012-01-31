@@ -7,11 +7,13 @@ function GameEngine(){
 	this.elapsedTime = 0;
 	this.stop = false;
 	this.pause = false;
-	this.timer = new Timer();
-	this.clockTick;
 	this.width;
 	this.height;
 	
+	// this.clockTick;
+	//this.timer = new Timer();
+	Timer.call( this );
+
 	this.update = function(){
 		if (!this.pause) this.elapsedTime++;
 		var entitiesCount = this.entities.length;
@@ -46,7 +48,6 @@ function GameEngine(){
 	
 	this.loop = function(){
 		if (!this.stop){
-			this.clockTick = this.timer.tick();
 			this.update();
 			this.clear();
 			this.draw();
