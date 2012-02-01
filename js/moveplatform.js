@@ -105,16 +105,6 @@ function MovePlatform(){
 			this.velocity.y = -this.maxVelocity.y * 1.5;
 			this.onGround = false;
 			this.spring = false;
-		} else if (this.spring == 1){
-			this.velocity.x = -this.maxVelocity.x;
-			this.velocity.y = -this.maxVelocity.y;
-			this.onGround = false;
-			this.spring = false;
-		} else if (this.spring == -1){
-			this.velocity.x = this.maxVelocity.x;
-			this.velocity.y = -this.maxVelocity.y;
-			this.onGround = false;
-			this.spring = false;
 		}
 
 		this.x += this.velocity.x;

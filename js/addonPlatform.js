@@ -54,27 +54,7 @@ function Spring(x,y,w,h,type){
 	this.draw = function(ctx){
 		this.hitCheck();
 		ctx.fillStyle = "red";
-		switch(this.type){
-			case 0:
-				ctx.fillRect(this.x, this.y, this.w, this.h);
-				break;
-			case 1:
-				ctx.beginPath();
-				ctx.moveTo(this.x+this.w, this.y);
-				ctx.lineTo(this.x, this.y+this.h);
-				ctx.lineTo(this.x+this.w, this.y+this.h);
-				ctx.closePath();
-				break;
-			case -1:
-				ctx.beginPath();
-				ctx.moveTo(this.x, this.y);
-				ctx.lineTo(this.x, this.y+this.h);
-				ctx.lineTo(this.x+this.w, this.y+this.h);
-				ctx.closePath();
-				break;
-		}
-		ctx.fill();
-		// ctx.fillRect(this.x, this.y, this.w, this.h);
+		ctx.fillRect(this.x, this.y, this.w, this.h);
 	};
 	this.hitCheck = function(){
 		var playerobj = {
@@ -83,11 +63,8 @@ function Spring(x,y,w,h,type){
 			w: player.w,
 			h: player.h
 		};
-		switch(this.type){
-			case 0: if ( isCollide(this, playerobj) ){ player.spring = 0; } break;
-			case 1: if ( isCollide(this, playerobj) ){ player.spring = 1; } break;
-			case -1: if ( isCollide(this, playerobj) ){ player.spring = -1; } break;
+		if ( isCollide(this, playerobj) ){
+			player.spring = 0;
 		}
-		
 	}
 }

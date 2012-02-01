@@ -20,7 +20,7 @@ block0 = [
 	[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0], // 5
 	[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0], // 6
 	[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0], // 7
-	[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0], // 8
+	[1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0], // 8
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] // 9
 	];
 block1 = [
@@ -32,7 +32,7 @@ block1 = [
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 5
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 6
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 7
-	[0,0,0,0,0,4,0,0,3,0,0,0,0,0,0,0], // 8
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 8
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] // 9
 	];
 block2 = [
@@ -85,12 +85,6 @@ function createMap(blockSize){
 						break;
 					case 2:
 						addonPlatform.add( new Spring(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2, 0) );
-						break;
-					case 3:
-						addonPlatform.add( new Spring(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2, 1) );
-						break;
-					case 4:
-						addonPlatform.add( new Spring(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2, -1) );
 						break;
 				}
 			}
