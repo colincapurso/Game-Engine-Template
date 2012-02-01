@@ -32,7 +32,7 @@ block1 = [
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 5
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 6
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 7
-	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 8
+	[0,0,0,0,0,4,0,0,3,0,0,0,0,0,0,0], // 8
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] // 9
 	];
 block2 = [
@@ -56,7 +56,7 @@ block3 = [
 	[1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0], // 5
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 6
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 7
-	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 8
+	[0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0], // 8
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] // 9
 	];
 block4 = [
@@ -79,8 +79,19 @@ function createMap(blockSize){
 	for (var i=0; i<map.length; i++){
 		for (var y=0; y<map[0].length; y++){
 			for (var x=0; x<map[0][0].length; x++){
-				if ( map[i][y][x] == 1 ){
-					game.entities[0].add( new Platform(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2) );
+				switch( map[i][y][x] ){
+					case 1:
+						addonPlatform.add( new Platform(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2) );
+						break;
+					case 2:
+						addonPlatform.add( new Spring(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2, 0) );
+						break;
+					case 3:
+						addonPlatform.add( new Spring(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2, 1) );
+						break;
+					case 4:
+						addonPlatform.add( new Spring(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2, -1) );
+						break;
 				}
 			}
 		}

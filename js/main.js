@@ -68,27 +68,23 @@ var ASSET_MANAGER = new AssetManager();
 // ASSET_MANAGER.queueDownload('img/SpriteSheet.png'); // Images for the game go in here, 1 image per line
 
 var game = new GameEngine();
+var addonPlatform = new PlatformAddon();
+var player = new Player(3500,100);
 
 game.init = function(ctx){
 	game.width = canvas.width;
 	game.height = canvas.height;
 	game.context = ctx;
 	keyListener();
-	game.addEntity( new PlatformAddon() );
+	game.addEntity( addonPlatform );
 	game.platforms = [];
-	game.addEntity( new Player(400,100) );
-	game.camera = { x: game.width/2, y: game.height/2, obj: game.entities[1] };
-	/*
-	game.entities[0].add( new Platform(5, 400, 300, 50, true) );
-	game.entities[0].add( new Platform(450, 300, 300, 50, true) );
-	game.entities[0].add( new Platform(850, 300, 300, 50, true) );
-	game.entities[0].add( new Platform(850, 100, 300, 50, true) );
-	game.entities[0].add( new Platform(-2000, 480, 4000, 10, true) ); // Ground
-	*/
+	game.addEntity( player );
+	game.camera = { x: game.width/2, y: game.height/2-50, obj: game.entities[1] };
 	createMap(96);
 }
 
-ASSET_MANAGER.downloadAll(function(){ 
+window.onload = function(){
 	game.init(context);
 	game.start();
-});
+}
+// ASSET_MANAGER.downloadAll(function(){ });

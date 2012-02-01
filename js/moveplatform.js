@@ -9,6 +9,7 @@ function MovePlatform(){
 	this.canJump = true;
 	this.onGround = true;
 	this.canMove = true;
+	this.spring = false;
 
 	this.state = 'isLanded';
 
@@ -52,12 +53,13 @@ function MovePlatform(){
 	
 	this.update = function(){
 		setLastPosition(this);
-		//document.getElementById('output').innerHTML = 'x: ' + this.x + '<br/>y: ' + this.y + '<br/>velx: ' + this.velocity.x + '<br/>vely: ' + this.velocity.y + '<br/>state: ' + this.state;
 		
 		document.getElementById('output').innerHTML =
 			'this.onGround ' + this.onGround + '<br/>' +
 			'this.canJump ' + this.canJump + '<br/>' +
-			'this.canMove ' + this.canMove;
+			'this.canMove ' + this.canMove + '<br/>' +
+			'this.isSpring ' + this.isSpring + '<br/>' +
+			'x ' + this.x;
 
 		// On Ground Check
 		if ( this.hitPlatform(this, 0, this.velocity.y + this.gravity) ){
@@ -98,7 +100,23 @@ function MovePlatform(){
 		} else {
 			this.velocity.x = 0;
 		}
-		 
+		
+		if (this.spring === 0){
+			this.velocity.y = -this.maxVelocity.y * 1.5;
+			this.onGround = false;
+			this.spring = false;
+		} else if (this.spring == 1){
+			this.velocity.x = -this.maxVelocity.x;
+			this.velocity.y = -this.maxVelocity.y;
+			this.onGround = false;
+			this.spring = false;
+		} else if (this.spring == -1){
+			this.velocity.x = this.maxVelocity.x;
+			this.velocity.y = -this.maxVelocity.y;
+			this.onGround = false;
+			this.spring = false;
+		}
+
 		this.x += this.velocity.x;
 		this.y += this.velocity.y;
 	};
@@ -151,40 +169,4 @@ Right: 160 | 50%
 
 -= Vertical =-
 if Y != 96 | 43%, camera moves up 6 | 16 depending on speed
-*/
-/*
-Platform Logic
-Action
-	- Condition
-		+ Result
-
-Character Moves Right (Left = -xvelocity)
-	- In air - isJumping / isFalling
-		- Collision check xvelocity
-			+ TRUE xvelocity = 0
-			+ FALSE +xvelocity;
-
-	- On ground - isLanded
-		- Collision check with gravity
-			+ TRUE yvelocity = 0
-			+ FALSE state = falling
-		- Collision check xvelocity
-			+ TRUE xvelocity = 0
-			+ FALSE +xvelocity;
-
-Character Jumps
-	- In air - isJumping / isFalling
-			Not possible
-	- On ground - isLanded
-		- Collision check with gravity
-			+ TRUE jump aka yvelocity = maxyvelocity
-			+ FALSE yvelocity = 0
-		- Collision check with -maxyvelocity (if there is something above)
-			+ TRUE yvelocity = 0
-			+ FALSE yvelocty = yvelocity
-Character Stands
-	- On ground
-		- Collision check with gravity
-			+ TRUE yvelocity = 0
-			+ FALSE state = isFalling
 */

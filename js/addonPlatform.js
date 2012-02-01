@@ -44,22 +44,50 @@ function PlatformAddon(){
 		game.platforms.push(entity);
 	};
 }
-function Map(){
-	this.x = 0;
-	this.y = 0;
-	this.w = 0;
-	this.h = 0;
-	this.solid = solid;
+function Spring(x,y,w,h,type){
+	this.x = x;
+	this.y = y;
+	this.w = w;
+	this.h = h;
+	this.type = type;
 	this.removeFromWorld = false;
-	this.draw = function(ctx){};
-	this.update = function(){
-		for (var i=0; i<game.platforms.length; i++){
-			if (game.platforms[i].removeFromWorld){
-				game.platforms.splice(i, 1);
-			}
+	this.draw = function(ctx){
+		this.hitCheck();
+		ctx.fillStyle = "red";
+		switch(this.type){
+			case 0:
+				ctx.fillRect(this.x, this.y, this.w, this.h);
+				break;
+			case 1:
+				ctx.beginPath();
+				ctx.moveTo(this.x+this.w, this.y);
+				ctx.lineTo(this.x, this.y+this.h);
+				ctx.lineTo(this.x+this.w, this.y+this.h);
+				ctx.closePath();
+				break;
+			case -1:
+				ctx.beginPath();
+				ctx.moveTo(this.x, this.y);
+				ctx.lineTo(this.x, this.y+this.h);
+				ctx.lineTo(this.x+this.w, this.y+this.h);
+				ctx.closePath();
+				break;
 		}
+		ctx.fill();
+		// ctx.fillRect(this.x, this.y, this.w, this.h);
 	};
-	this.add = function(entity){
-		game.platforms.push(entity);
-	};
+	this.hitCheck = function(){
+		var playerobj = {
+			x: player.x,
+			y: player.y + player.velocity.y,
+			w: player.w,
+			h: player.h
+		};
+		switch(this.type){
+			case 0: if ( isCollide(this, playerobj) ){ player.spring = 0; } break;
+			case 1: if ( isCollide(this, playerobj) ){ player.spring = 1; } break;
+			case -1: if ( isCollide(this, playerobj) ){ player.spring = -1; } break;
+		}
+		
+	}
 }
