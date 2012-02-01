@@ -63,16 +63,3 @@ function Map(){
 		game.platforms.push(entity);
 	};
 }
-function createMap(){
-	var blocksize = 64;
-	var mapWidth = blocksize*16;
-	for (var i=0; i<5; i++){
-		for (var y=0; y<10; y++){
-			for (var x=0; x<16; x++){
-				if ( map[i][y][x] == 1 ){
-					game.entities[0].add( new Platform(x*blocksize+i*mapWidth, y*blocksize, blocksize-2, blocksize-2) );
-				}
-			}
-		}
-	}
-}

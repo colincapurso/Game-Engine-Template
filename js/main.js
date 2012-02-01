@@ -85,7 +85,7 @@ game.init = function(ctx){
 	game.entities[0].add( new Platform(850, 100, 300, 50, true) );
 	game.entities[0].add( new Platform(-2000, 480, 4000, 10, true) ); // Ground
 	*/
-	createMap();
+	createMap(96);
 }
 
 ASSET_MANAGER.downloadAll(function(){ 

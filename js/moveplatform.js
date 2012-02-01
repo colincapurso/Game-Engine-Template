@@ -60,7 +60,7 @@ function MovePlatform(){
 			'this.canMove ' + this.canMove;
 
 		// On Ground Check
-		if ( this.hitPlatform(this, this.velocity.x, this.velocity.y + this.gravity) ){
+		if ( this.hitPlatform(this, 0, this.velocity.y + this.gravity) ){
 			this.onGround = true;
 			this.canJump = true;
 		} else {
@@ -86,7 +86,7 @@ function MovePlatform(){
 		// Jump
 		if (this.canJump && keysDown['space']){
 			this.velocity.y = -this.maxVelocity.y;
-			if ( this.hitPlatform(this, this.velocity.x, this.velocity.y) ){ this.velocity.y = 0; }
+			if ( this.hitPlatform(this, 0, this.velocity.y) ){ this.velocity.y = 0; }
 		}
 
 		// Hit Wall
@@ -135,17 +135,6 @@ function MovePlatform(){
 	};
 
 	this.draw = function(){
-		/*
-		for (var i=-50; i < 500; i++){
-			// Background 
-			game.context.fillStyle = '#020';
-			game.context.fillRect(i*50, 0, 5, 480);
-		}
-		// Wall
-		game.context.fillStyle = '#020';
-		game.context.fillRect(-100, 0, 100, 480);
-		game.context.fillRect(game.width + 1000, 0, 100, 480);
-		*/
 		game.context.fillStyle = 'red';
 		game.context.fillRect(this.x, this.y, this.w, this.h);
 	};

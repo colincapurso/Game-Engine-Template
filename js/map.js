@@ -1,5 +1,5 @@
 // 1 block = 16x10
-block = [
+blockTemplate = [
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 0
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 1
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 2
@@ -45,7 +45,7 @@ block2 = [
 	[0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0], // 6
 	[0,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0], // 7
 	[1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0], // 8
-	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] // 9
+	[1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1] // 9
 	];
 block3 = [
 	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 0
@@ -73,4 +73,16 @@ block4 = [
 	];
 
 map = [ block0,block1,block2,block3,block4 ];
-// map[i] * 256
+
+function createMap(blockSize){
+	var mapWidth = blockSize * map[0][0].length;
+	for (var i=0; i<map.length; i++){
+		for (var y=0; y<map[0].length; y++){
+			for (var x=0; x<map[0][0].length; x++){
+				if ( map[i][y][x] == 1 ){
+					game.entities[0].add( new Platform(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2) );
+				}
+			}
+		}
+	}
+}
