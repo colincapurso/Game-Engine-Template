@@ -47,7 +47,7 @@ function ObjUpdatePlayer(){
 }
 
 function Player(x,y){
-	ObjActive.call( this, x,y,87,87 );
+	ObjActive.call( this, x,y,96,128 );
 	this.update = ObjUpdatePlayer;
 	this.draw = ObjDraw;
 	this.clear = ObjClear;
@@ -76,13 +76,16 @@ game.init = function(ctx){
 	keyListener();
 	game.addEntity( new PlatformAddon() );
 	game.platforms = [];
-	game.addEntity( new Player(400,200) );
+	game.addEntity( new Player(400,100) );
 	game.camera = { x: game.width/2, y: game.height/2, obj: game.entities[1] };
+	/*
 	game.entities[0].add( new Platform(5, 400, 300, 50, true) );
 	game.entities[0].add( new Platform(450, 300, 300, 50, true) );
 	game.entities[0].add( new Platform(850, 300, 300, 50, true) );
 	game.entities[0].add( new Platform(850, 100, 300, 50, true) );
 	game.entities[0].add( new Platform(-2000, 480, 4000, 10, true) ); // Ground
+	*/
+	createMap();
 }
 
 ASSET_MANAGER.downloadAll(function(){ 

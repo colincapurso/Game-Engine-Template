@@ -44,3 +44,35 @@ function PlatformAddon(){
 		game.platforms.push(entity);
 	};
 }
+function Map(){
+	this.x = 0;
+	this.y = 0;
+	this.w = 0;
+	this.h = 0;
+	this.solid = solid;
+	this.removeFromWorld = false;
+	this.draw = function(ctx){};
+	this.update = function(){
+		for (var i=0; i<game.platforms.length; i++){
+			if (game.platforms[i].removeFromWorld){
+				game.platforms.splice(i, 1);
+			}
+		}
+	};
+	this.add = function(entity){
+		game.platforms.push(entity);
+	};
+}
+function createMap(){
+	var blocksize = 64;
+	var mapWidth = blocksize*16;
+	for (var i=0; i<5; i++){
+		for (var y=0; y<10; y++){
+			for (var x=0; x<16; x++){
+				if ( map[i][y][x] == 1 ){
+					game.entities[0].add( new Platform(x*blocksize+i*mapWidth, y*blocksize, blocksize-2, blocksize-2) );
+				}
+			}
+		}
+	}
+}

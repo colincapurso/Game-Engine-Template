@@ -135,6 +135,7 @@ function MovePlatform(){
 	};
 
 	this.draw = function(){
+		/*
 		for (var i=-50; i < 500; i++){
 			// Background 
 			game.context.fillStyle = '#020';
@@ -144,7 +145,7 @@ function MovePlatform(){
 		game.context.fillStyle = '#020';
 		game.context.fillRect(-100, 0, 100, 480);
 		game.context.fillRect(game.width + 1000, 0, 100, 480);
-		
+		*/
 		game.context.fillStyle = 'red';
 		game.context.fillRect(this.x, this.y, this.w, this.h);
 	};
