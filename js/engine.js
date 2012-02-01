@@ -16,8 +16,7 @@ function GameEngine(){
 
 	this.update = function(){
 		if (!this.pause) this.elapsedTime++;
-		var entitiesCount = this.entities.length;
-		for (var i=0; i<entitiesCount; i++){ if (!this.entities[i].removeFromWorld) this.entities[i].update(); }
+		for (var i=0; i<this.entities.length; i++){ if (!this.entities[i].removeFromWorld) this.entities[i].update(); }
 		for (var i=this.entities.length-1; i>=0; --i){
 			if (this.entities[i].removeFromWorld){
 				if (this.entities[i].clear){ this.entities[i].clear(this.context); }
@@ -37,7 +36,7 @@ function GameEngine(){
 	};
 	
 	this.draw = function(){
-		cameraStart();
+		cameraStart(); // Only works if the camera is added in init()
 		for (var i=0; i<this.entities.length; i++){
 			this.entities[i].draw(this.context);
 		}

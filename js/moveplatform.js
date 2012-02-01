@@ -5,19 +5,16 @@ function MovePlatform(){
 	this.decceleration = { x: 0.5 };
 	this.friction = { x: 0.5, y: 0 };
 	this.gravity = 2;
+	
+	this.canJump = true;
+	this.onGround = true;
+	this.canMove = true;
 
-	this.state = 'isFalling';
+	this.state = 'isLanded';
 
-	this.setDirection = function(){
-		if ( this.velocity.x < 0 ) {
-			this.dir = -1;
-		} else if ( this.velocity.x > 0 ){
-			this.dir = 1;
-		} else {
-			this.dir = 0;
-		}
+	this.updateState = function(obj){
 	};
-
+	
 	this.move = function(dir){
 		var v = this.velocity.x * dir;
 		var a = this.acceleration.x;
@@ -33,94 +30,118 @@ function MovePlatform(){
 					v = maxv;
 				}
 			}
-		}
-
-		this.velocity.x = v * dir;
-	};
-	
-	this.jump = function(){
-		// Pressing Jump
-		if ( this.state == 'isLanded' || this.state == 'isMoving' ){
-			this.velocity.y = -this.maxVelocity.y;
-			this.state = 'isJumping';
+			this.velocity.x = v * dir;
+		} else {
+			this.applyGroundFriction();
 		}
 	};
 	
 	this.applyGroundFriction = function(){
-		this.velocity.x -= this.friction.x * this.dir;
-	};
-	
-	this.applyGravity = function(){
-		if (this.state == 'isFalling' || this.state == 'isJumping'){
-			this.velocity.y += this.gravity;
-		}
-	};
-	
-	this.screenEdgeCheck = function(){
-		if ( this.x < 0 ){
-			this.velocity.x = 0;
-			this.x = 0;
-		} else if ( this.x > game.width - this.w + 1000 ){
-			this.velocity.x = 0;
-			this.x = game.width - this.w + 1000;
-		}
-		if ( this.y > game.height - this.h ){
-			this.velocity.y = 0;
-			this.y = game.height - this.h;
-			this.state = 'isLanded';
-		}
-	};
-	
-	this.updateState = function(){
-		// NOT USED YET
-		if ( this.velocity.y < 0 ){ this.state = 'isFalling'; }
-			else if ( this.velocity.y > 0 ){ this.state = 'isJumping'; }
-				else if ( this.velocity.y == 0 ){ this.state = 'isLanded'; }
-
-		if ( this.velocity.x != 0 ){ this.state = 'isMoving'; }
-	};
-	
-	this.inputCheck = function(){
-		// Left / Right
-		if ( isKeyDown('right') ){
-			this.move(1);
-		} else if ( isKeyDown('left') ){
-			this.move(-1);
-		} else {
-			this.applyGroundFriction();
-		}
+		var dir;
+		var velx = this.velocity.x;
 		
-		// Jump
-		if ( isKeyDown('space') ){
-			this.jump();
+		if ( velx > 0 ){
+			dir = 1;
+		} else if ( velx < 0 ){
+			dir = -1;
+		} else {
+			dir = 0;
 		}
+		this.velocity.x -= this.friction.x * dir;
 	};
 	
 	this.update = function(){
 		setLastPosition(this);
-		// These functions are in physicsPlatformer.js
-		this.setDirection();
-		this.screenEdgeCheck();
-		this.applyGravity();
-		this.inputCheck();
+		//document.getElementById('output').innerHTML = 'x: ' + this.x + '<br/>y: ' + this.y + '<br/>velx: ' + this.velocity.x + '<br/>vely: ' + this.velocity.y + '<br/>state: ' + this.state;
 		
-		// Move
+		document.getElementById('output').innerHTML =
+			'this.onGround ' + this.onGround + '<br/>' +
+			'this.canJump ' + this.canJump + '<br/>' +
+			'this.canMove ' + this.canMove;
+
+		// On Ground Check
+		if ( this.hitPlatform(this, this.velocity.x, this.velocity.y + this.gravity) ){
+			this.onGround = true;
+			this.canJump = true;
+		} else {
+			this.onGround = false;
+			this.canJump = false;
+		}
+		
+		// Hit Wall Check		
+		if ( this.hitPlatform(this, this.velocity.x, 0) ){
+			this.canMove = false;
+		} else {
+			this.canMove = true;
+		}
+		
+		// Land
+		if ( this.onGround ){
+			this.velocity.y = 0;
+		} else if ( !this.onGround ){
+			// Fall
+			this.velocity.y += this.gravity;
+		}
+
+		// Jump
+		if (this.canJump && keysDown['space']){
+			this.velocity.y = -this.maxVelocity.y;
+			if ( this.hitPlatform(this, this.velocity.x, this.velocity.y) ){ this.velocity.y = 0; }
+		}
+
+		// Hit Wall
+		if ( this.canMove ){
+			this.inputLeftRight();
+			if ( this.hitPlatform(this, this.velocity.x, this.velocity.y) ){
+				this.velocity.x = 0;
+			}
+		} else {
+			this.velocity.x = 0;
+		}
+		 
 		this.x += this.velocity.x;
 		this.y += this.velocity.y;
-		document.getElementById('output').innerHTML = 'x: ' + this.x + '<br/>y: ' + this.y;
 	};
 	
+	this.inputLeftRight = function(){
+		if ( keysDown['right'] ){ if ( !this.hitPlatform(this, this.velocity.x, this.velocity.y - 1) ){ this.move(1); } }
+			else if ( keysDown['left'] ){ if ( !this.hitPlatform(this, this.velocity.x, this.velocity.y - 1) ){ this.move(-1); } }
+			else { this.move(0); }
+	};
+	
+	this.hitPlatform = function(obj, modx, mody){
+		var collide = false;
+		for (var i=0; i<game.platforms.length; i++){
+			var a = {
+				x: obj.x + modx,
+				y: obj.y + mody,
+				w: obj.w,
+				h: obj.h
+			};
+			var b = {
+				x: game.platforms[i].x,
+				y: game.platforms[i].y,
+				w: game.platforms[i].w,
+				h: game.platforms[i].h
+			};
+			if (a.x <= (b.x + b.w) 
+					&& b.x <= (a.x + a.w) 
+					&& a.y <= (b.y + b.h) 
+					&& b.y <= (a.y + a.h)){
+				collide = true;
+			}
+		}
+		return collide;
+	};
+
 	this.draw = function(){
 		for (var i=-50; i < 500; i++){
 			// Background 
-			game.context.fillStyle = 'green';
+			game.context.fillStyle = '#020';
 			game.context.fillRect(i*50, 0, 5, 480);
 		}
-		// Ground
-		game.context.fillStyle = 'green';
-		game.context.fillRect(-2500, 480, 25000, 80);
 		// Wall
-		game.context.fillStyle = 'green';
+		game.context.fillStyle = '#020';
 		game.context.fillRect(-100, 0, 100, 480);
 		game.context.fillRect(game.width + 1000, 0, 100, 480);
 		
@@ -130,12 +151,9 @@ function MovePlatform(){
 	
 }
 
-// Platform Options
-// this.type: solid | platform
-
-
 // Scrolling Borders
 /*
+Sega Dimensions
 320x224
 -= Horizontal =-
 Left: 144 | 45%
@@ -143,4 +161,40 @@ Right: 160 | 50%
 
 -= Vertical =-
 if Y != 96 | 43%, camera moves up 6 | 16 depending on speed
+*/
+/*
+Platform Logic
+Action
+	- Condition
+		+ Result
+
+Character Moves Right (Left = -xvelocity)
+	- In air - isJumping / isFalling
+		- Collision check xvelocity
+			+ TRUE xvelocity = 0
+			+ FALSE +xvelocity;
+
+	- On ground - isLanded
+		- Collision check with gravity
+			+ TRUE yvelocity = 0
+			+ FALSE state = falling
+		- Collision check xvelocity
+			+ TRUE xvelocity = 0
+			+ FALSE +xvelocity;
+
+Character Jumps
+	- In air - isJumping / isFalling
+			Not possible
+	- On ground - isLanded
+		- Collision check with gravity
+			+ TRUE jump aka yvelocity = maxyvelocity
+			+ FALSE yvelocity = 0
+		- Collision check with -maxyvelocity (if there is something above)
+			+ TRUE yvelocity = 0
+			+ FALSE yvelocty = yvelocity
+Character Stands
+	- On ground
+		- Collision check with gravity
+			+ TRUE yvelocity = 0
+			+ FALSE state = isFalling
 */

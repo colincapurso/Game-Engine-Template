@@ -54,8 +54,8 @@ function Player(x,y){
 	this.name = 'player';
 	
 	// TEST STUFF
-	// MovePlatform.call(this); // Scrolling Platformer
-	Move8Dir.call(this); // Overrides Update and adds a bunch of things
+	MovePlatform.call(this); // Scrolling Platformer
+	// Move8Dir.call(this); // Overrides Update and adds a bunch of things
 }
 
 ////////////////////////////////////////////////////////////////
@@ -74,8 +74,15 @@ game.init = function(ctx){
 	game.height = canvas.height;
 	game.context = ctx;
 	keyListener();
-	game.addEntity( new Player(400,300) );
-	game.camera = { x: game.width/2, y: game.height/2, obj: game.entities[0] };
+	game.addEntity( new PlatformAddon() );
+	game.platforms = [];
+	game.addEntity( new Player(400,200) );
+	game.camera = { x: game.width/2, y: game.height/2, obj: game.entities[1] };
+	game.entities[0].add( new Platform(5, 400, 300, 50, true) );
+	game.entities[0].add( new Platform(450, 300, 300, 50, true) );
+	game.entities[0].add( new Platform(850, 300, 300, 50, true) );
+	game.entities[0].add( new Platform(850, 100, 300, 50, true) );
+	game.entities[0].add( new Platform(-2000, 480, 4000, 10, true) ); // Ground
 }
 
 ASSET_MANAGER.downloadAll(function(){ 
