@@ -47,15 +47,12 @@ function ObjUpdatePlayer(){
 }
 
 function Player(x,y){
-	ObjActive.call( this, x,y,96,128 );
-	this.update = ObjUpdatePlayer;
-	this.draw = ObjDraw;
-	this.clear = ObjClear;
+	ObjActive.call( this, x,y,64,96 );
+	// this.update = ObjUpdatePlayer;
+	// this.draw = ObjDraw;
+	// this.clear = ObjClear;
 	this.name = 'player';
-	
-	// TEST STUFF
-	MovePlatform.call(this); // Scrolling Platformer
-	// Move8Dir.call(this); // Overrides Update and adds a bunch of things
+	updatePlatformMovement.call(this); // Scrolling Platformer
 }
 
 ////////////////////////////////////////////////////////////////
@@ -68,7 +65,7 @@ var ASSET_MANAGER = new AssetManager();
 // ASSET_MANAGER.queueDownload('img/SpriteSheet.png'); // Images for the game go in here, 1 image per line
 
 var game = new GameEngine();
-var addonPlatform = new PlatformAddon();
+var addonPlatform = new PlatformsEngine();
 var player = new Player(3500,100);
 
 game.init = function(ctx){
@@ -79,8 +76,10 @@ game.init = function(ctx){
 	game.addEntity( addonPlatform );
 	game.platforms = [];
 	game.addEntity( player );
-	game.camera = { x: game.width/2, y: game.height/2-50, obj: game.entities[1] };
-	createMap(96);
+	// game.camera = { x: game.width/2, y: game.height/2-50, obj: game.entities[1] };
+  game.camera = { x: 500, y: 150, obj: player };
+  game.tileSize = 64;
+	createMap(game.tileSize);
 }
 
 window.onload = function(){

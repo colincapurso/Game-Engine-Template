@@ -81,29 +81,8 @@ function Timer(){
 	};
 }
 
-/*
-*	This adds an additional entity to the game
-* which creates an extra loop for platforms
-*	It keep track of platforms in an array 
-*	called game.platforms
-*
-*	To use, add this to your init()
-*	game.addEntity( new PlatformAddon() );
-*	game.platforms = [];
-*/
-function Platform(x,y,w,h, solid){
-	this.x = x;
-	this.y = y;
-	this.w = w;
-	this.h = h;
-	this.solid = solid;
-	this.removeFromWorld = false;
-	this.draw = function(ctx){
-		ctx.fillStyle = "pink";
-		ctx.fillRect(this.x, this.y, this.w, this.h);
-	}
-}
-function PlatformsEngine(){
+
+function PlatformEngine(){
 	this.last = { x:false, y:false };
 	this.removeFromWorld = false;
 	this.update = function(){

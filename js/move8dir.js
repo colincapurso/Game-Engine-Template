@@ -1,3 +1,5 @@
+// Depreciated
+
 function Move8Dir(){
 	this.velocity = { x: 0, y: 0 };
 	this.maxVelocity = { x: 20, y: 20 };

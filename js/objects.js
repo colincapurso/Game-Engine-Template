@@ -1,4 +1,29 @@
-function MovePlatform(){
+function Spring(x,y,w,h,type){
+	this.x = x;
+	this.y = y;
+	this.w = w;
+	this.h = h;
+	this.type = type;
+	this.removeFromWorld = false;
+	this.draw = function(ctx){
+		this.hitCheck();
+		ctx.fillStyle = "red";
+		ctx.fillRect(this.x, this.y, this.w, this.h);
+	};
+	this.hitCheck = function(){
+		var playerobj = {
+			x: player.x,
+			y: player.y + player.velocity.y,
+			w: player.w,
+			h: player.h
+		};
+		if ( isCollide(this, playerobj) ){
+			player.spring = 0;
+		}
+	}
+}
+
+function updatePlatformMovement(){
 	this.velocity = { x: 0, y: 0 };
 	this.maxVelocity = { x: 20, y: 30 }; // this.maxVelocity.y == jump power
 	this.acceleration = { x: 0.5 };
