@@ -72,25 +72,6 @@ block4 = [
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] // 9
 	];
 
-var map = [ block0,block1,block2,block3,block4 ];
-
-function createMap(){
-	var mapWidth = map[0][0].length;
-	for (var chunk=0; chunk<map.length; chunk++){
-		for (var y=0; y<map[0].length; y++){
-			for (var x=0; x<map[0][0].length; x++){
-				switch( map[chunk][y][x] ){
-					case 1:
-						platformEngine.add( new Platform(x, y, chunk, game.tileSize, mapWidth) );
-						break;
-					case 2:
-						platformEngine.add( new Spring(x, y, chunk, game.tileSize, mapWidth) );
-						break;
-				}
-			}
-		}
-	}
-}
 
 function zoom(){
   if ( keysDown['minus'] || keysDown['minus1'] ){
@@ -139,4 +120,33 @@ function Grid(blockSize, chunks, blocksUp, blocksAcross){
       game.context.stroke();
     }
   };
+}
+
+var templateMap = [ block0,block1,block2,block3,block4 ];
+
+function createMap(){
+  var map = game.map;
+	var mapWidth = map[0][0].length;
+	for (var chunk=0; chunk<map.length; chunk++){
+		for (var y=0; y<map[0].length; y++){
+			for (var x=0; x<map[0][0].length; x++){
+				switch( map[chunk][y][x] ){
+					case 1:
+						platformEngine.add( new Platform(x, y, chunk, game.tileSize, mapWidth) );
+						break;
+					case 2:
+						platformEngine.add( new Spring(x, y, chunk, game.tileSize, mapWidth) );
+						break;
+				}
+			}
+		}
+	}
+}
+
+function getMap(){
+  var m = templateMap;
+  if ( !localStorage.map ){
+    storage.set('map', m);
+  }
+  return storage.get('map');
 }

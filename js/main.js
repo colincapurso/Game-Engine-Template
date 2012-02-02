@@ -79,7 +79,9 @@ game.init = function(ctx){
 	// game.camera = { x: game.width/2, y: game.height/2-50, obj: game.entities[1] };
   game.camera = { x: 500, y: 150, obj: player };
   game.tileSize = 64;
-	createMap(game.tileSize);
+  
+  game.map = getMap();
+  createMap(game.tileSize);
 }
 
 window.onload = function(){

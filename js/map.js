@@ -72,9 +72,10 @@ block4 = [
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] // 9
 	];
 
-map = [ block0,block1,block2,block3,block4 ];
+templateMap = [ block0,block1,block2,block3,block4 ];
 
 function createMap(blockSize){
+  var map = game.map;
 	var mapWidth = blockSize * map[0][0].length;
 	for (var i=0; i<map.length; i++){
 		for (var y=0; y<map[0].length; y++){
@@ -90,4 +91,12 @@ function createMap(blockSize){
 			}
 		}
 	}
+}
+
+function getMap(){
+  var m = templateMap;
+  if ( !localStorage.map ){
+    storage.set('map', m);
+  }
+  return storage.get('map');
 }

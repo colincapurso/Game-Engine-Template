@@ -137,8 +137,8 @@ function updatePlatformMovement(){
 	};
 	
 	this.inputLeftRight = function(){
-		if ( keysDown['right'] ){ if ( !this.hitPlatform(this, this.velocity.x, this.velocity.y - 1) ){ this.move(1); } }
-			else if ( keysDown['left'] ){ if ( !this.hitPlatform(this, this.velocity.x, this.velocity.y - 1) ){ this.move(-1); } }
+		if ( keysDown['left'] || keysDown['a'] ){ if ( !this.hitPlatform(this, this.velocity.x, this.velocity.y - 1) ){ this.move(-1); } }
+      else if ( keysDown['right'] || keysDown['d']){ if ( !this.hitPlatform(this, this.velocity.x, this.velocity.y - 1) ){ this.move(1); } }
 			else { this.move(0); }
 	};
 	

@@ -28,10 +28,11 @@ game.init = function(ctx){
 	// game.camera = { x: game.width/2, y: game.height/2, obj: player };
   game.camera = { x: 0, y: 0, obj: player };
 
-  // Grid
-  game.addEntity( new Grid(game.tileSize, map.length, map[0].length, map[0][0].length) );
   // Map
-	createMap(game.tileSize);
+  game.map = getMap();
+  // Grid
+  game.addEntity( new Grid(game.tileSize, game.map.length, game.map[0].length, game.map[0][0].length) );
+  createMap(game.tileSize);
   game.zoomTimer = Date.now();
 }
 
