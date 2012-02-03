@@ -18,38 +18,38 @@ function disconnectHandler(e) {
 function gamepadUpdate() {
   for (j in gamepads) {
     var gamepad = gamepads[j];
-		if (gamepad.axes[1] < -0.5){
-			//keysDown['up'] = true;
-		}	else if (gamepad.axes[1] > 0.5){
-			// keysDown['down'] = true;
-		}	else {
-			// delete keysDown['up'];
-			// delete keysDown['down'];
-		}
-		if (gamepad.axes[0] < -0.5){
-			keysDown['left'] = true;
-		}	else if (gamepad.axes[0] > 0.5){
-			keysDown['right'] = true;
-		}	else {
-			delete keysDown['left'];
-			delete keysDown['right'];
-		}
-		if ( gamepad.buttons[0] == 1){
-			keysDown['space'] = true;
-		} else {
-			delete keysDown['space'];
-		}
-		
+    if (gamepad.axes[1] < -0.5){
+      //keysDown['up'] = true;
+    }  else if (gamepad.axes[1] > 0.5){
+      // keysDown['down'] = true;
+    }  else {
+      // delete keysDown['up'];
+      // delete keysDown['down'];
+    }
+    if (gamepad.axes[0] < -0.5){
+      keysDown['left'] = true;
+    }  else if (gamepad.axes[0] > 0.5){
+      keysDown['right'] = true;
+    }  else {
+      delete keysDown['left'];
+      delete keysDown['right'];
+    }
+    if ( gamepad.buttons[0] == 1){
+      keysDown['space'] = true;
+    } else {
+      delete keysDown['space'];
+    }
+    
 
-		/* Controls
-		gamepad.buttons[0]; // A
-		gamepad.buttons[1]; // B
-		gamepad.buttons[2]; // X
-		gamepad.buttons[3]; // Y
-		gamepad.axes[0]; // Left Right
-		gamepad.axes[1]; // Up Down
-		*/
-	}
+    /* Controls
+    gamepad.buttons[0]; // A
+    gamepad.buttons[1]; // B
+    gamepad.buttons[2]; // X
+    gamepad.buttons[3]; // Y
+    gamepad.axes[0]; // Left Right
+    gamepad.axes[1]; // Up Down
+    */
+  }
 }
 /*
 window.addEventListener("MozGamepadConnected", connectHandler);

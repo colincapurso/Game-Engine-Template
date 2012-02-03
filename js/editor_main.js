@@ -9,36 +9,33 @@ ASSET_MANAGER.queueDownload('img/tiles.png');
 
 var game = new GameEngine();
 var platformEngine = new PlatformEngine();
-var player = new Player(-100,-100 );
+var player = new Camera(-100,-100 );
 var cursor = new Cursor();
 
 
 game.init = function(ctx){
   // Additional Properties
-	game.width = canvas.width;
-	game.height = canvas.height;
-	game.context = ctx;
-	game.platforms = [];
+  game.width = canvas.width;
+  game.height = canvas.height;
+  game.context = ctx;
+  game.platforms = [];
   
   // Event Listeners
-	keyListener();
+  keyListener();
   mouseTouchListener();
 
   // Active Objects
-	game.addEntity( platformEngine );
-	game.addEntity( player );
-	// game.camera = { x: game.width/2, y: game.height/2, obj: player };
+  game.addEntity( platformEngine );
+  game.addEntity( player );
   game.camera = { x: 0, y: 0, obj: player };
 
-  // Map
-  game.tileSize = 32;
-  game.map = getMap(templateMap);
+  // Load Map
+  mapReload();
   
   // DrawUI is in the Grid() object
   game.addEntity( new Grid(game.tileSize, game.map.length, game.map[0].length, game.map[0][0].length) );
 
   game.addEntity( cursor );
-  createMap();
   game.zoomTimer = Date.now();
   game.clickTimer = Date.now();
   
@@ -47,9 +44,9 @@ game.init = function(ctx){
     buttons: ASSET_MANAGER.getAsset('img/buttons.png'),
     tiles: ASSET_MANAGER.getAsset('img/tiles.png')
   };
-}
+};
 
 ASSET_MANAGER.downloadAll(function(){ 
-	game.init(context);
-	game.start();
+  game.init(context);
+  game.start();
 });
