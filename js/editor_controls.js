@@ -69,7 +69,7 @@ function isKeyDown(k){
 ////////////// MOUSE AND TOUCH EVENTS /////////////////
 ///////////////////////////////////////////////////////
 var latestCoords = [{x: 0, y: 0}];
-
+var isMouseDown = false;
 function mouseTouchListener(){
 	window.onkeydown = keyPressed;
 	window.onkeyup = keyReleased;
@@ -101,9 +101,11 @@ function mouseMove(e){
 
 function mouseDown(e){ // AKA Input Start
 	var p = getCoords(e);
+  isMouseDown = true;
 }
 function mouseUp(e){ // AKA Input End
 	var p = getCoords(e);
+  isMouseDown = false;
 }
 
 function getCoords(e) {

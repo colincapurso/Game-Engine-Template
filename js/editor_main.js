@@ -10,6 +10,8 @@ ASSET_MANAGER.queueDownload('img/tiles.png');
 var game = new GameEngine();
 var platformEngine = new PlatformEngine();
 var player = new Player(-100,-100 );
+var cursor = new Cursor();
+
 
 game.init = function(ctx){
   // Additional Properties
@@ -17,7 +19,6 @@ game.init = function(ctx){
 	game.height = canvas.height;
 	game.context = ctx;
 	game.platforms = [];
-  game.tileSize = 32;
   
   // Event Listeners
 	keyListener();
@@ -30,11 +31,16 @@ game.init = function(ctx){
   game.camera = { x: 0, y: 0, obj: player };
 
   // Map
-  game.map = getMap();
+  game.tileSize = 32;
+  game.map = getMap(templateMap);
+  
+  // DrawUI is in the Grid() object
   game.addEntity( new Grid(game.tileSize, game.map.length, game.map[0].length, game.map[0][0].length) );
-  game.addEntity( new Cursor() );
-  createMap(game.tileSize);
+
+  game.addEntity( cursor );
+  createMap();
   game.zoomTimer = Date.now();
+  game.clickTimer = Date.now();
   
   // Set Images
   game.img = {

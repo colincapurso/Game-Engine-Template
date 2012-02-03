@@ -107,41 +107,15 @@ function Cursor(x,y,w,h){
 	this.removeFromWorld = false;
 	this.last = { x: null, y: null };
 	this.update = function(){
-    this.mx = Math.floor((latestCoords[0].x + player.x)/game.tileSize)*game.tileSize;
-    this.my = Math.floor((latestCoords[0].y + player.y)/game.tileSize)*game.tileSize;
-    this.chunk = Math.floor(this.mx/game.tileSize/game.map[0][0].length);
-    this.x = Math.floor( this.mx/game.tileSize );
-    this.y = Math.floor( this.my/game.tileSize );
-    zoom();
-  };
-	this.draw = function(ctx){
-    var type;
-    // Outputs Current Tile
-    var allGreaterThanZero = this.chunk >= 0 
-                          && this.x >= 0 
-                          && this.y >= 0;
-    var allLowerThanMax = this.chunk < game.map.length 
-                          && this.x < game.map[0][0].length*game.map.length
-                          && this.y < game.map[0].length;
-    
-    if ( allGreaterThanZero && allLowerThanMax ){
-      var type = game.map[this.chunk][this.y][(this.x - 16 * this.chunk)];
-      draw(this, ctx, type, 'UI');
+    if (game.map.length){
+      this.mx = Math.floor((latestCoords[0].x + player.x)/game.tileSize)*game.tileSize;
+      this.my = Math.floor((latestCoords[0].y + player.y)/game.tileSize)*game.tileSize;
+      this.chunk = Math.floor(this.mx/game.tileSize/game.map[0][0].length);
+      this.x = Math.floor( this.mx/game.tileSize );
+      this.y = Math.floor( this.my/game.tileSize );
     }
-
-    if ( allGreaterThanZero && allLowerThanMax ){
-      // Outputs Cursor
-      draw(this, ctx, type, 'cursor');
-    }
-
-    document.getElementById('output').innerHTML = 
-      'Coords relative to game <br/>' + 
-      'chunk: ' + this.chunk + '<br/>' +
-      'x: ' + this.x + '<br/>' +
-      'y: ' + this.y + '<br/>' +
-      '>0: ' + allGreaterThanZero + ' |  Max: ' + allLowerThanMax + '<br>'
-      ;
   };
+	this.draw = function(ctx){};
 }
 
 // Object Global Functions
