@@ -79,6 +79,8 @@ function zoom(){
     if ( game.tileSize > 16 && now > game.zoomTimer+100){
       game.tileSize = game.tileSize/1.1;
       game.zoomTimer = now;
+      delete keysDown['minus'];
+      delete keysDown['minus1'];
       for (var i=0; i<game.platforms.length; i++){ game.platforms[i].init(); }
     }
   } else if ( keysDown['plus'] || keysDown['plus1']){
@@ -86,6 +88,8 @@ function zoom(){
     if ( game.tileSize < 256 && now > game.zoomTimer+100){
       game.tileSize = game.tileSize*1.1;
       game.zoomTimer = now;
+      delete keysDown['plus'];
+      delete keysDown['plus1'];
       for (var i=0; i<game.platforms.length; i++){ game.platforms[i].init(); }
     }
   }
@@ -100,25 +104,28 @@ function Grid(blockSize, chunks, blocksUp, blocksAcross){
   this.blocksAcross = blocksAcross;
   this.removeFromWorld = false;
   this.update = function(){};
-  this.draw = function(){
+  this.draw = function(ctx){
     var mapWidth = game.tileSize * this.blocksAcross * this.chunks;
     var mapHeight = game.tileSize * this.blocksUp;
     for (var i=0; i < this.blocksUp+1; i++){
-      game.context.strokeStyle = '#222';
-      game.context.beginPath();
-      game.context.moveTo(0, game.tileSize * i);
-      game.context.lineTo(this.chunks * this.blocksAcross * game.tileSize, game.tileSize * i);
-      game.context.closePath();
-      game.context.stroke();
+      ctx.strokeStyle = '#222';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(0, game.tileSize * i);
+      ctx.lineTo(this.chunks * this.blocksAcross * game.tileSize, game.tileSize * i);
+      ctx.closePath();
+      ctx.stroke();
     }
     for (var i=0; i < this.chunks*this.blocksAcross+1; i++){
-      game.context.strokeStyle = '#222';
-      game.context.beginPath();
-      game.context.moveTo(game.tileSize * i, 0);
-      game.context.lineTo(game.tileSize * i, game.tileSize * 10);
-      game.context.closePath();
-      game.context.stroke();
+      ctx.strokeStyle = '#222';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(game.tileSize * i, 0);
+      ctx.lineTo(game.tileSize * i, game.tileSize * 10);
+      ctx.closePath();
+      ctx.stroke();
     }
+    drawUI();
   };
 }
 
@@ -132,7 +139,7 @@ function createMap(){
 			for (var x=0; x<map[0][0].length; x++){
 				switch( map[chunk][y][x] ){
 					case 1:
-						platformEngine.add( new Platform(x, y, chunk, game.tileSize, mapWidth) );
+						platformEngine.add( new Tiles(x, y, chunk, game.tileSize, mapWidth) );
 						break;
 					case 2:
 						platformEngine.add( new Spring(x, y, chunk, game.tileSize, mapWidth) );

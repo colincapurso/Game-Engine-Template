@@ -3,12 +3,13 @@ window.requestAnimFrame = window.requestAnimationFrame || window.mozRequestAnima
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 
-// var ASSET_MANAGER = new AssetManager();
-// ASSET_MANAGER.queueDownload('img/SpriteSheet.png'); // Images for the game go in here, 1 image per line
+var ASSET_MANAGER = new AssetManager();
+ASSET_MANAGER.queueDownload('img/buttons.png'); // Images for the game go in here, 1 image per line
+ASSET_MANAGER.queueDownload('img/tiles.png');
 
 var game = new GameEngine();
 var platformEngine = new PlatformEngine();
-var player = new Player(0,128 );
+var player = new Player(-100,-100 );
 
 game.init = function(ctx){
   // Additional Properties
@@ -30,14 +31,19 @@ game.init = function(ctx){
 
   // Map
   game.map = getMap();
-  // Grid
   game.addEntity( new Grid(game.tileSize, game.map.length, game.map[0].length, game.map[0][0].length) );
+  game.addEntity( new Cursor() );
   createMap(game.tileSize);
   game.zoomTimer = Date.now();
+  
+  // Set Images
+  game.img = {
+    buttons: ASSET_MANAGER.getAsset('img/buttons.png'),
+    tiles: ASSET_MANAGER.getAsset('img/tiles.png')
+  };
 }
 
-// ASSET_MANAGER.downloadAll(function(){ });
-window.onload = function(){
+ASSET_MANAGER.downloadAll(function(){ 
 	game.init(context);
 	game.start();
-}
+});

@@ -55,8 +55,7 @@ function Spring(x,y, chunk, blockSize, mapWidth){
 	this.h = 0;
 	this.removeFromWorld = false;
 	this.draw = function(ctx){
-		ctx.fillStyle = "red";
-		ctx.fillRect(this.x, this.y, this.w, this.h);
+		draw(this, ctx, 2);
 	};
   this.baseX = x;
   this.baseY = y;
@@ -73,15 +72,14 @@ function Spring(x,y, chunk, blockSize, mapWidth){
   this.init();
 }
 
-function Platform(x,y, chunk, blockSize, mapWidth){
+function Tiles(x,y, chunk, blockSize, mapWidth){
 	this.x = x;
 	this.y = y;
 	this.w = 0;
 	this.h = 0;
 	this.removeFromWorld = false;
 	this.draw = function(ctx){
-		ctx.fillStyle = "pink";
-		ctx.fillRect(this.x, this.y, this.w, this.h);
+		draw(this, ctx, 1);
 	}
   this.baseX = x;
   this.baseY = y;
@@ -91,10 +89,194 @@ function Platform(x,y, chunk, blockSize, mapWidth){
   this.init = function(){
     this.x = (this.baseX * game.tileSize) + (this.chunk * this.mapWidth * game.tileSize);
     this.y = this.baseY * game.tileSize;
-    this.w = game.tileSize - 2;
-    this.h = game.tileSize - 2;
-    console.log('init');
+    this.w = game.tileSize - 1;
+    this.h = game.tileSize - 1;
   }
   
   this.init();
+}
+
+function Cursor(x,y,w,h){
+	this.x = x;
+	this.y = y;
+	this.mx = 0;
+	this.my = 0;
+  this.chunk = 0;
+	this.w = w;
+	this.h = h;
+	this.removeFromWorld = false;
+	this.last = { x: null, y: null };
+	this.update = function(){
+    this.mx = Math.floor((latestCoords[0].x + player.x)/game.tileSize)*game.tileSize;
+    this.my = Math.floor((latestCoords[0].y + player.y)/game.tileSize)*game.tileSize;
+    this.chunk = Math.floor(this.mx/game.tileSize/game.map[0][0].length);
+    this.x = Math.floor( this.mx/game.tileSize );
+    this.y = Math.floor( this.my/game.tileSize );
+    zoom();
+  };
+	this.draw = function(ctx){
+    var type;
+    // Outputs Current Tile
+    var allGreaterThanZero = this.chunk >= 0 
+                          && this.x >= 0 
+                          && this.y >= 0;
+    var allLowerThanMax = this.chunk < game.map.length 
+                          && this.x < game.map[0][0].length*game.map.length
+                          && this.y < game.map[0].length;
+    
+    if ( allGreaterThanZero && allLowerThanMax ){
+      var type = game.map[this.chunk][this.y][(this.x - 16 * this.chunk)];
+      draw(this, ctx, type, 'UI');
+    }
+
+    if ( allGreaterThanZero && allLowerThanMax ){
+      // Outputs Cursor
+      draw(this, ctx, type, 'cursor');
+    }
+
+    document.getElementById('output').innerHTML = 
+      'Coords relative to game <br/>' + 
+      'chunk: ' + this.chunk + '<br/>' +
+      'x: ' + this.x + '<br/>' +
+      'y: ' + this.y + '<br/>' +
+      '>0: ' + allGreaterThanZero + ' |  Max: ' + allLowerThanMax + '<br>'
+      ;
+  };
+}
+
+// Object Global Functions
+function draw(obj, ctx, type, where){
+  if ( where == 'UI' ){
+    obj = {
+      x: player.x + 20,
+      y: player.y + 20,
+      w: 128,
+      h: 128 };
+      ctx.fillStyle = "#222";
+      ctx.fillRect(obj.x-8, obj.y-8, obj.w+16, obj.h+16);
+      ctx.clearRect(obj.x, obj.y, obj.w, obj.h);
+  } else if ( where == 'cursor' ){
+    ctx.fillStyle = "yellow";
+    ctx.fillRect(obj.mx-2, obj.my-2, game.tileSize+4, game.tileSize+4);
+    switch(type){
+      case 1: ctx.fillStyle = "brown"; break;
+      case 2: ctx.fillStyle = "green"; break;
+    }
+    ctx.fillRect(obj.mx, obj.my, game.tileSize, game.tileSize);
+  }
+  switch(type){
+    case 1:
+      ctx.fillStyle = "brown";
+      ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
+      break;
+    case 2:
+      ctx.fillStyle = "green";
+      ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
+      break;
+  }
+}
+
+function playerMovementUpdateDraw(){
+	this.velocity = { x: 0, y: 0 };
+	this.maxVelocity = { x: 20, y: 30 }; // this.maxVelocity.y == jump power
+	this.acceleration = { x: 0.5, y: 0.5 };
+	this.decceleration = { x: 0.5, y: 0.5 };
+	this.friction = { x: 0.5, y: 0.5 };
+	this.gravity = 2;
+	
+	this.canJump = true;
+	this.onGround = true;
+	this.canMove = true;
+	this.spring = false;
+
+	this.state = 'isLanded';
+
+	this.move = function(dir){
+		var v = this.velocity.x * dir;
+		var a = this.acceleration.x;
+		var d = this.decceleration.x;
+		var maxv = this.maxVelocity.x;
+		
+		if (dir != 0){
+			if ( v < 0 ){
+				v += d;
+			} else if ( v < maxv ){
+				v += a;
+				if ( v > maxv ){
+					v = maxv;
+				}
+			}
+			this.velocity.x = v * dir;
+		} else {
+			this.applyGroundFriction(1,0);
+		}
+	};
+	
+	this.moveY = function(dir){
+		var v = this.velocity.y * dir;
+		var a = this.acceleration.y;
+		var d = this.decceleration.y;
+		var maxv = this.maxVelocity.y;
+		
+		if (dir != 0){
+			if ( v < 0 ){
+				v += d;
+			} else if ( v < maxv ){
+				v += a;
+				if ( v > maxv ){
+					v = maxv;
+				}
+			}
+			this.velocity.y = v * dir;
+		} else {
+			this.applyGroundFriction(0,1);
+		}
+	};
+	
+	this.applyGroundFriction = function(x,y){
+    if (x){
+      var dir;
+      var velx = this.velocity.x;
+      
+      if ( velx > 0 ){
+        dir = 1;
+      } else if ( velx < 0 ){
+        dir = -1;
+      } else {
+        dir = 0;
+      }
+      this.velocity.x -= this.friction.x * dir;
+    } else if (y){
+      var dir;
+      var vely = this.velocity.y;
+      
+      if ( vely > 0 ){
+        dir = 1;
+      } else if ( vely < 0 ){
+        dir = -1;
+      } else {
+        dir = 0;
+      }
+      this.velocity.y -= this.friction.y * dir;
+    }
+	};
+	
+	this.update = function(){
+		this.setLastPosition();
+		this.inputLeftRight();
+		this.x += this.velocity.x;
+		this.y += this.velocity.y;
+	};
+	
+	this.inputLeftRight = function(){
+		if ( keysDown['right'] || keysDown['d'] ){ this.move(1); }
+			else if ( keysDown['left'] || keysDown['a'] ){ this.move(-1); }
+      else { this.move(0); }
+    if ( keysDown['up'] || keysDown['w'] ){ this.moveY(-1); }
+      else if ( keysDown['down'] || keysDown['s'] ){ this.moveY(1); }
+      else { this.moveY(0); }
+	};
+	
+	this.draw = function(){};
+	
 }

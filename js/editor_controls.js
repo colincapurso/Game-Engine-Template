@@ -81,7 +81,10 @@ function mouseTouchListener(){
 	canvas.onmousemove = mouseMove;
 	canvas.onmousedown = mouseDown;
 	canvas.onmouseup = mouseUp;
-	// canvas.onmouseclick = // Click Event
+  // canvas.onmouseclick = // Click Event
+  
+  window.addEventListener('DOMMouseScroll', scroll, false);
+  window.onmousewheel = document.onmousewheel = scroll;
 }
 
 function mouseMove(e){
@@ -110,4 +113,16 @@ function getCoords(e) {
 		return { x: e.layerX, y: e.layerY };
 	else
 		return { x: e.pageX - canvas.offsetLeft, y: e.pageY - canvas.offsetTop };
+}
+
+function scroll(e){
+  e.preventDefault();
+  var direction;
+  if ( e.wheelDelta > 0 || e.wheelDeltaY > 0 || e.detail < 0){
+    direction = 'zoom in';
+    if ('plus'){ keysDown['plus'] = true; }
+  } else if ( e.wheelDelta < 0 || e.wheelDeltaY < 0 || e.detail > 0){
+    direction = 'zoom out';
+    if ('minus'){ keysDown['minus'] = true; }
+  }
 }
