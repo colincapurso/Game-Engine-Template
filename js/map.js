@@ -102,14 +102,16 @@ function mapReload(){
   if (!game.tileSize){ game.tileSize = { w: 32 , h: 32 }; }
   var map = game.map;
   var mapWidth;
+  var w = game.tileSize.w;
+  var h = game.tileSize.h;
   mapWidth = map[0][0].length;
 
-  for (var i=0; i<map.length; i++){
+  for (var chunk=0; chunk<map.length; chunk++){
     for (var y=0; y<map[0].length; y++){
       for (var x=0; x<map[0][0].length; x++){
-        switch( map[i][y][x] ){
-          case 1: platformEngine.add( new MapTile(x, y, game.tileSize.w, game.tileSize.h, i, mapWidth) ); break;
-          case 2: platformEngine.add( new MapSpring(x, y, game.tileSize.w, game.tileSize.h, i, mapWidth) ); break;
+        switch( map[chunk][y][x] ){
+          case 1: platformEngine.add( new MapTile(x, y, w, h, chunk, mapWidth) ); break;
+          case 2: platformEngine.add( new MapSpring(x, y, w, h, chunk, mapWidth) ); break;
         }
       }
     }
@@ -163,24 +165,22 @@ function mapClear(){
 }
 
 function mapTileAdd(chunk,y,x,type){
-  var map = game.map;
-  var mapWidth = map[0][0].length;
-  
-  // Update Map
+  // Add new tile to game.map[]
   game.map[chunk][y][x] = type;
   
-  // Update Game Platforms
-  platformEngine.add( new MapTile(x, y, game.tileSize.w, game.tileSize.h, chunk, mapWidth) );
+  // Add new tile to Platform Engine (game.platforms[])
+  platformEngine.add( new MapTile(x, y, game.tileSize.w, game.tileSize.h, chunk, game.map[0][0].length) );
 }
 
 function mapTileRemove(chunk,y,x){
-  // Update Map
+  // Remove tile from game.map[]
   game.map[chunk][y][x] = 0;
   
-  var gamex = (x * game.tileSize.w) + (chunk * game.map[0][0].length * game.tileSize);;
+  // Expands [y][x] position to pixel position
+  var gamex = (x * game.tileSize.w) + (chunk * game.map[0][0].length * game.tileSize.w);
   var gamey = y * game.tileSize.h;
 
-  // Update Game Platforms
+  // Scan game.platforms[] for current tile and then flag for removal
   for (var i=0; i<game.platforms.length; i++){
     if (game.platforms[i].chunk == chunk
         && game.platforms[i].y == gamey

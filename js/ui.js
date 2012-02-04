@@ -18,21 +18,33 @@ function drawUI(){
   var mchunk = cursor.chunk;
   var mx = cursor.x;
   var my = cursor.y;
+  var mapWidth = game.map[0][0].length;
   var save = { x: p.x+30, y: p.y+30, w: 100, h: 30, offset: 0 };
   var load = { x: p.x+30+110, y: p.y+30, w: 100, h: 30, offset: 1 };
   var clear = { x: p.x+30+220, y: p.y+30, w: 100, h: 30, offset: 2 };
   var reset = { x: p.x+game.width-180, y: p.y+30, w: 100, h: 30, offset: 3 };
   var help = { x: p.x+game.width-40-30, y: p.y+30, w: 40, h: 30, offset: 4 };
   // var tile0 = { x: p.x + 48 + (96+10)*0, y: p.y + 512, w: 96, h: 96, offset: 0 };
-  var tile1 = { x: p.x + 48 + (96+10)*1, y: p.y + 512, w: 96, h: 96, offset: 0 };
-  var tile2 = { x: p.x + 48 + (96+10)*2, y: p.y + 512, w: 96, h: 96, offset: 0 };
-  var tile3 = { x: p.x + 48 + (96+10)*3, y: p.y + 512, w: 96, h: 96, offset: 0 };
-  var tile4 = { x: p.x + 48 + (96+10)*4, y: p.y + 512, w: 96, h: 96, offset: 0 };
-  var tile5 = { x: p.x + 48 + (96+10)*5, y: p.y + 512, w: 96, h: 96, offset: 0 };
-  var tile6 = { x: p.x + 48 + (96+10)*6, y: p.y + 512, w: 96, h: 96, offset: 0 };
-  var tile7 = { x: p.x + 48 + (96+10)*7, y: p.y + 512, w: 96, h: 96, offset: 0 };
+  /*
+  var imgWidth = 64;
+  var imgHeight = 64;
+  var tile = {
+      x: p.x + 48 + (96+10)*1,
+      y: p.y + 512,
+      w: imgWidth,
+      h: imgHeight,
+      offset: 0 };
+  
+  var tile1 = { x: p.x + 48 + (96+10)*1, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
+  var tile2 = { x: p.x + 48 + (96+10)*2, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
+  var tile3 = { x: p.x + 48 + (96+10)*3, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
+  var tile4 = { x: p.x + 48 + (96+10)*4, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
+  var tile5 = { x: p.x + 48 + (96+10)*5, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
+  var tile6 = { x: p.x + 48 + (96+10)*6, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
+  var tile7 = { x: p.x + 48 + (96+10)*7, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
+  */
   var aboveZero = (mchunk >= 0) && (mx >= 0) && (my >= 0);
-  var belowMax = (mchunk < game.map.length) && (mx < game.map[0][0].length * game.map.length) && (my < game.map[0].length);
+  var belowMax = (mchunk < game.map.length) && (mx < mapWidth * game.map.length) && (my < game.map[0].length);
   
   // Draws
   drawSelectedTileOnGrid(aboveZero, belowMax);
@@ -42,13 +54,8 @@ function drawUI(){
   drawButtons(mouse,clear);
   drawButtons(mouse,reset);
   drawButtons(mouse,help);
-  drawTileSelectors(mouse,tile1);
-  drawTileSelectors(mouse,tile2);
-  drawTileSelectors(mouse,tile3);
-  drawTileSelectors(mouse,tile4);
-  drawTileSelectors(mouse,tile5);
-  drawTileSelectors(mouse,tile6);
-  drawTileSelectors(mouse,tile7);
+  
+  drawTileSelectors(mouse,p);
   
   // EVENTS - Check for Mouse/Keyboard zoom input
   zoom();
@@ -62,10 +69,10 @@ function drawUI(){
         else if ( isCollide(mouse,save) ){ mapSave(); mapReload(); }
         else if ( isCollide(mouse,reset) ){ mapReset(); mapReload(); }
         else if (aboveZero && belowMax){
-          var newMX = mx - game.map[0][0].length * mchunk;
-          var gamex = mx;
+          var newMX = mx - mapWidth * mchunk;
+          // var gamex = mx;
           if ( game.map[mchunk][my][newMX] ){
-            mapTileRemove(mchunk,my,newMX, gamex);
+            mapTileRemove(mchunk,my,newMX);
           } else {
             mapTileAdd(mchunk,my,newMX,1);
           }
@@ -73,29 +80,28 @@ function drawUI(){
     }
   }
 }
-function drawTileSelectors(mouse, tile){
-  if (isCollide(mouse,tile)){
-    game.context.drawImage(
-      game.img.tiles, 
-      tile.w,
-      tile.h*tile.offset,
-      tile.w,
-      tile.h,
-      tile.x,
-      tile.y,
-      tile.w,
-      tile.h);
-  } else {
-    game.context.drawImage(
-      game.img.tiles,
-      0,
-      tile.h*tile.offset,
-      tile.w,
-      tile.h,
-      tile.x,
-      tile.y,
-      tile.w,
-      tile.h);
+function drawTileSelectors(mouse, p){
+  var imgWidth = 64;
+  var imgHeight = 64;
+  var screenTileSize = 96;
+  var space = 10;
+  var xoffset = 170;
+  var yoffset = 512;
+  for (var i=0; i<7; i++){
+    var x = p.x + xoffset + ( screenTileSize + space ) * i;
+    var y = p.y + yoffset;
+    var tile = { x: x, y: y, w: screenTileSize, h: screenTileSize };
+    if ( !isCollide(mouse,tile) ){
+      // Normal
+      game.context.drawImage(game.img.tiles, 
+        0, imgHeight*i, imgWidth, imgHeight,
+        x, y, screenTileSize, screenTileSize);
+    } else {
+      // MouseOver
+      game.context.drawImage(game.img.tiles, 
+        imgWidth, imgHeight*i, imgWidth, imgHeight,
+        x, y, screenTileSize, screenTileSize);
+    }
   }
 }
 
@@ -129,8 +135,8 @@ function drawSelectedTile(aboveZero, belowMax){
   // var type;
   // Outputs Current Tile
   if ( aboveZero && belowMax ){
-    var mapXlength = game.map[0][0].length;
-    var type = game.map[cursor.chunk][cursor.y][(cursor.x - mapXlength * cursor.chunk)];
+    var mapWidth = game.map[0][0].length;
+    var type = game.map[cursor.chunk][cursor.y][(cursor.x - mapWidth * cursor.chunk)];
     var obj = {
       x: player.x + 32 + (96+10)*0,
       y: player.y + 512,
@@ -154,35 +160,39 @@ function drawSelectedTile(aboveZero, belowMax){
 
 function drawSelectedTileOnGrid(){
   if (game.map){
-    // var type;
-    // Outputs Current Tile
-    var aboveZero = cursor.chunk >= 0 
-                    && cursor.x >= 0 
-                    && cursor.y >= 0;
-    var belowMax = cursor.chunk < game.map.length 
-                    && cursor.x < game.map[0][0].length*game.map.length
-                    && cursor.y < game.map[0].length;
-    
+    var chunkCount = game.map.length;
+    var mapHeight = game.map[0].length;
+    var mapWidth = game.map[0][0].length;
+    var tileWidth = game.tileSize.w;
+    var tileHeight = game.tileSize.h;
+    var aboveZero = (cursor.chunk >= 0) && (cursor.x >= 0) && (cursor.y >= 0);
+    var belowMax = (cursor.chunk < chunkCount) && (cursor.x < mapWidth * chunkCount) && (cursor.y < mapHeight);
+    /*
+    console.log(
+        'chunk: ' + cursor.chunk + 
+        '| y: ' + cursor.y +
+        '| x: ' + cursor.x
+        );
+        */
     if ( aboveZero && belowMax ){
-      var mapXlength = game.map[0][0].length;
-      var type = game.map[cursor.chunk][cursor.y][(cursor.x - mapXlength * cursor.chunk)];
-      var mx = Math.floor((latestCoords[0].x + player.x)/game.tileSize.w)*game.tileSize.w;
-      var my = Math.floor((latestCoords[0].y + player.y)/game.tileSize.h)*game.tileSize.h;
+      var type = game.map[cursor.chunk][cursor.y][(cursor.x - mapWidth * cursor.chunk)];
+      var mx = Math.floor((latestCoords[0].x + player.x)/tileWidth)*tileWidth;
+      var my = Math.floor((latestCoords[0].y + player.y)/tileHeight)*tileHeight;
 
       switch(type){
         case 0:
           game.context.fillStyle = "grey";
-          game.context.fillRect(mx-2, my-2, game.tileSize.w+4, game.tileSize.h+4);
+          game.context.fillRect(mx-2, my-2, tileWidth+4, tileHeight+4);
           break;
         case 1:
           // game.context.fillStyle = "brown";
           game.context.fillStyle = "yellow";
-          game.context.fillRect(mx-2, my-2, game.tileSize.w+4, game.tileSize.h+4);
+          game.context.fillRect(mx-2, my-2, tileWidth+4, tileHeight+4);
           break;
         case 2:
           // game.context.fillStyle = "green";
           game.context.fillStyle = "yellow";
-          game.context.fillRect(mx-2, my-2, game.tileSize.w+4, game.tileSize.h+4);
+          game.context.fillRect(mx-2, my-2, tileWidth+4, game.tileSize.h+4);
           break;
       }
     }

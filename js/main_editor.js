@@ -11,7 +11,7 @@ var game = new GameEngine();
 var platformEngine = new PlatformEngine();
 var player = new Camera(-100,-100 );
 var cursor = new Cursor();
-var tileSize = { w: 60 , h: 40 };
+var tileSize = { w: 48, h: 48 };
 
 
 game.init = function(ctx){

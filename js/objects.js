@@ -173,10 +173,12 @@ function Cursor(){
   this.last = { x: null, y: null };
   this.update = function(){
     if (game.map.length){
+      // mx, my is the pixel coords rounded to nearest tilesize
       this.mx = Math.floor((latestCoords[0].x + player.x)/game.tileSize.w)*game.tileSize.w;
       this.my = Math.floor((latestCoords[0].y + player.y)/game.tileSize.h)*game.tileSize.h;
       this.chunk = Math.floor(this.mx/game.tileSize.w/game.map[0][0].length);
       this.x = Math.floor( this.mx/game.tileSize.w );
+      // this.x = Math.floor( this.mx/game.tileSize.w ) - game.map[0][0].length * game.map.length;
       this.y = Math.floor( this.my/game.tileSize.h );
       this.w = game.tileSize.w;
       this.h = game.tileSize.h;
