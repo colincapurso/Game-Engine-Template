@@ -1,3 +1,22 @@
+function ObjActive(x,y,w,h){
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+  this.removeFromWorld = false;
+  this.last = { x: null, y: null };
+  this.color = 'red';
+  this.update = function(){
+    // Updates here
+  };
+  this.draw = function(){
+    // Draws here
+  };
+  this.clear = function(){
+    // Clears here
+  };
+}
+
 function Platform(x,y,w,h, solid){
   this.x = x;
   this.y = y;
@@ -6,18 +25,14 @@ function Platform(x,y,w,h, solid){
   this.solid = solid;
   this.removeFromWorld = false;
   this.draw = function(ctx){
-    ctx.fillStyle = "pink";
+    ctx.fillStyle = "magenta";
     ctx.fillRect(this.x, this.y, this.w, this.h);
   };
 }
 
 function Spring(x,y,w,h,type){
-  this.x = x;
-  this.y = y;
-  this.w = w;
-  this.h = h;
+  ObjActive.call( this, x,y,w,h );
   this.type = type;
-  this.removeFromWorld = false;
   this.draw = function(ctx){
     this.hitCheck();
     ctx.fillStyle = "red";
@@ -30,17 +45,17 @@ function Spring(x,y,w,h,type){
       w: player.w,
       h: player.h
     };
-    if ( isCollide(this, playerobj) ){
+    if ( this.isCollide(this, playerobj) ){
       player.spring = 0;
     }
   };
 }
 
-function MapTile(x,y, chunk, blockSize, mapWidth){
+function MapTile(x,y, w,h, chunk, mapWidth){
   this.x = x;
   this.y = y;
-  this.w = 0;
-  this.h = 0;
+  this.w = w;
+  this.h = h;
   this.removeFromWorld = false;
   this.draw = function(ctx){
     draw(this, ctx, 1);
@@ -51,20 +66,20 @@ function MapTile(x,y, chunk, blockSize, mapWidth){
   this.mapWidth = mapWidth;
   
   this.init = function(){
-    this.x = (this.baseX * game.tileSize) + (this.chunk * this.mapWidth * game.tileSize);
-    this.y = this.baseY * game.tileSize;
-    this.w = game.tileSize - 1;
-    this.h = game.tileSize - 1;
+    this.x = (this.baseX * game.tileSize.w) + (this.chunk * this.mapWidth * game.tileSize.w);
+    this.y = this.baseY * game.tileSize.h;
+    this.w = game.tileSize.w - 1;
+    this.h = game.tileSize.h - 1;
   };
   
   this.init();
 }
 
-function MapSpring(x,y, chunk, blockSize, mapWidth){
+function MapSpring(x,y, w,h, chunk, mapWidth){
   this.x = x;
   this.y = y;
-  this.w = 0;
-  this.h = 0;
+  this.w = w;
+  this.h = h;
   this.removeFromWorld = false;
   this.draw = function(ctx){
     draw(this, ctx, 2);
@@ -75,10 +90,10 @@ function MapSpring(x,y, chunk, blockSize, mapWidth){
   this.mapWidth = mapWidth;
   
   this.init = function(){
-    this.x = (this.baseX * game.tileSize) + (this.chunk * this.mapWidth * game.tileSize);
-    this.y = this.baseY * game.tileSize;
-    this.w = game.tileSize - 2;
-    this.h = game.tileSize - 2;
+    this.x = (this.baseX * game.tileSize.w) + (this.chunk * this.mapWidth * game.tileSize.w);
+    this.y = this.baseY * game.tileSize.h;
+    this.w = game.tileSize.w - 2;
+    this.h = game.tileSize.h - 2;
   };
   
   this.init();
@@ -99,6 +114,14 @@ function ObjActive(x,y,w,h){
   this.update;
   this.draw;
   this.clear;
+  this.isCollide = function(a,b){
+    if (a.x <= (b.x + b.w) 
+      && b.x <= (a.x + a.w) 
+      && a.y <= (b.y + b.h) 
+      && b.y <= (a.y + a.h)){
+      return true;
+    }
+  };
 }
 
 function ObjClear(){
@@ -131,29 +154,32 @@ function Camera(x,y){ // This is the camera
   cameraUpdateMovement.call(this); // Scrolling Platform Movement
 }
 
-function Player(x,y){
-  ObjActive.call( this, x,y,64,96 );
+function Player(x,y,w,h){
+  ObjActive.call( this, x,y,w,h );
   this.name = 'player';
+  this.image;
   playerMovementUpdateDraw.call(this); // Scrolling Platform Movement
 }
 
-function Cursor(x,y,w,h){
-  this.x = x;
-  this.y = y;
+function Cursor(){
+  this.x = 0;
+  this.y = 0;
+  this.w = 0;
+  this.h = 0;
   this.mx = 0;
   this.my = 0;
   this.chunk = 0;
-  this.w = w;
-  this.h = h;
   this.removeFromWorld = false;
   this.last = { x: null, y: null };
   this.update = function(){
     if (game.map.length){
-      this.mx = Math.floor((latestCoords[0].x + player.x)/game.tileSize)*game.tileSize;
-      this.my = Math.floor((latestCoords[0].y + player.y)/game.tileSize)*game.tileSize;
-      this.chunk = Math.floor(this.mx/game.tileSize/game.map[0][0].length);
-      this.x = Math.floor( this.mx/game.tileSize );
-      this.y = Math.floor( this.my/game.tileSize );
+      this.mx = Math.floor((latestCoords[0].x + player.x)/game.tileSize.w)*game.tileSize.w;
+      this.my = Math.floor((latestCoords[0].y + player.y)/game.tileSize.h)*game.tileSize.h;
+      this.chunk = Math.floor(this.mx/game.tileSize.w/game.map[0][0].length);
+      this.x = Math.floor( this.mx/game.tileSize.w );
+      this.y = Math.floor( this.my/game.tileSize.h );
+      this.w = game.tileSize.w;
+      this.h = game.tileSize.h;
     }
   };
   this.draw = function(ctx){
@@ -173,14 +199,6 @@ function draw(obj1, ctx, type, where){
       ctx.fillStyle = "#222";
       ctx.fillRect(obj.x-8, obj.y-8, obj.w+16, obj.h+16);
       ctx.clearRect(obj.x, obj.y, obj.w, obj.h);
-  } else if ( where == 'cursor' ){
-    ctx.fillStyle = "yellow";
-    ctx.fillRect(obj.mx-2, obj.my-2, game.tileSize+4, game.tileSize+4);
-    switch(type){
-      case 1: ctx.fillStyle = "brown"; break;
-      case 2: ctx.fillStyle = "green"; break;
-    }
-    ctx.fillRect(obj.mx, obj.my, game.tileSize, game.tileSize);
   }
   switch(type){
     case 1:
@@ -448,8 +466,42 @@ function playerMovementUpdateDraw(){
   };
 
   this.draw = function(){
-    game.context.fillStyle = 'red';
+    // Body
+    game.context.fillStyle = 'orange';
     game.context.fillRect(this.x, this.y, this.w, this.h);
+    // Sword
+    game.context.fillStyle = '#CCC';
+    game.context.fillRect(this.x-12, this.y-12, 18, 45);
+    game.context.fillStyle = 'darkgreen';
+    game.context.fillRect(this.x-18, this.y+33, 30, 9);
+    game.context.fillStyle = 'orange';
+    game.context.fillRect(this.x-12, this.y+42, 18, 13);
+    // Shield
+    game.context.fillStyle = '#CCC';
+    game.context.fillRect(this.x+45, this.y+34, 27, 33);
+
+    // game.context.drawImage(this.image, this.x, this.y, this.w, this.h);
   };
-  
 }
+
+
+/*
+function ObjClear(){
+  if (this.last.x && this.last.y){
+     var x = (0.5 + this.last.x) | 0; // Bitwise rounding hack
+     var y = (0.5 + this.last.y) | 0; // Bitwise rounding hack
+     var padding = 20;
+     game.context.clearRect(
+                   x - padding,
+                   y - padding,
+                   this.w + padding + padding,
+                   this.h + padding + padding
+                   );
+  }
+}
+
+function ObjDraw(){
+// var x = (0.5 + this.x) | 0; // Bitwise rounding hack
+// var y = (0.5 + this.y) | 0; // Bitwise rounding hack
+}
+*/

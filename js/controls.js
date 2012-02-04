@@ -56,6 +56,7 @@ function keyPressed(e){
   var k = KEYMAP.checkKeys(e.keyCode); // This event is for keys held down
   if (k){ keysDown[k] = true; }
 }
+
 function keyReleased(e){
   var k = KEYMAP.checkKeys(e.keyCode);
   if (k){ delete keysDown[k]; }

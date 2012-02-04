@@ -11,6 +11,7 @@ var game = new GameEngine();
 var platformEngine = new PlatformEngine();
 var player = new Camera(-100,-100 );
 var cursor = new Cursor();
+var tileSize = { w: 60 , h: 40 };
 
 
 game.init = function(ctx){
@@ -30,6 +31,7 @@ game.init = function(ctx){
   game.camera = { x: 0, y: 0, obj: player };
 
   // Load Map
+  game.tileSize = tileSize;
   mapReload();
   
   // DrawUI is in the Grid() object

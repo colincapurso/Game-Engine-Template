@@ -3,6 +3,7 @@
 // var photo = ASSET_MANAGER.getAsset('img/photo.png');
 // ASSET_MANAGER.downloadAll(function(){ init(); });
 
+
 function AssetManager(){
   this.successCount = 0;
   this.errorCount = 0;

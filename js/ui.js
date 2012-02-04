@@ -1,3 +1,11 @@
+function isCollide(a,b){
+  if (a.x <= (b.x + b.w) 
+    && b.x <= (a.x + a.w) 
+    && a.y <= (b.y + b.h) 
+    && b.y <= (a.y + a.h)){
+    return true;
+  }
+}
 // Currently called in function Grid()
 function drawUI(){
   var p = { x: player.x, y: player.y };
@@ -158,23 +166,23 @@ function drawSelectedTileOnGrid(){
     if ( aboveZero && belowMax ){
       var mapXlength = game.map[0][0].length;
       var type = game.map[cursor.chunk][cursor.y][(cursor.x - mapXlength * cursor.chunk)];
-      var mx = Math.floor((latestCoords[0].x + player.x)/game.tileSize)*game.tileSize;
-      var my = Math.floor((latestCoords[0].y + player.y)/game.tileSize)*game.tileSize;
+      var mx = Math.floor((latestCoords[0].x + player.x)/game.tileSize.w)*game.tileSize.w;
+      var my = Math.floor((latestCoords[0].y + player.y)/game.tileSize.h)*game.tileSize.h;
 
       switch(type){
         case 0:
           game.context.fillStyle = "grey";
-          game.context.fillRect(mx-2, my-2, game.tileSize+4, game.tileSize+4);
+          game.context.fillRect(mx-2, my-2, game.tileSize.w+4, game.tileSize.h+4);
           break;
         case 1:
           // game.context.fillStyle = "brown";
           game.context.fillStyle = "yellow";
-          game.context.fillRect(mx-2, my-2, game.tileSize+4, game.tileSize+4);
+          game.context.fillRect(mx-2, my-2, game.tileSize.w+4, game.tileSize.h+4);
           break;
         case 2:
           // game.context.fillStyle = "green";
           game.context.fillStyle = "yellow";
-          game.context.fillRect(mx-2, my-2, game.tileSize+4, game.tileSize+4);
+          game.context.fillRect(mx-2, my-2, game.tileSize.w+4, game.tileSize.h+4);
           break;
       }
     }

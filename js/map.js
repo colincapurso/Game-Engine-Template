@@ -27,8 +27,9 @@ var templateMap = [ chunk0,chunk1,chunk2,chunk3,chunk4 ];
 function zoom(){
   if ( keysDown['minus'] || keysDown['minus1'] ){
     var now = Date.now();
-    if ( game.tileSize > 16 && now > game.zoomTimer+100){
-      game.tileSize = game.tileSize/1.1;
+    if ( game.tileSize.w > 16 && now > game.zoomTimer+100){
+      game.tileSize.w = game.tileSize.w/1.1;
+      game.tileSize.h = game.tileSize.h/1.1;
       game.zoomTimer = now;
       delete keysDown['minus'];
       delete keysDown['minus1'];
@@ -36,8 +37,9 @@ function zoom(){
     }
   } else if ( keysDown['plus'] || keysDown['plus1']){
     var now = Date.now();
-    if ( game.tileSize < 256 && now > game.zoomTimer+100){
-      game.tileSize = game.tileSize*1.1;
+    if ( game.tileSize.w < 256 && now > game.zoomTimer+100){
+      game.tileSize.w = game.tileSize.w*1.1;
+      game.tileSize.h = game.tileSize.h*1.1;
       game.zoomTimer = now;
       delete keysDown['plus'];
       delete keysDown['plus1'];
@@ -62,8 +64,8 @@ function Grid(blockSize, chunks, blocksUp, blocksAcross){
       ctx.strokeStyle = '#222';
       ctx.lineWidth = 0.5;
       ctx.beginPath();
-      ctx.moveTo(0, game.tileSize * i);
-      ctx.lineTo(this.chunks * this.blocksAcross * game.tileSize, game.tileSize * i);
+      ctx.moveTo(0, game.tileSize.h * i);
+      ctx.lineTo(this.chunks * this.blocksAcross * game.tileSize.w, game.tileSize.h * i);
       ctx.closePath();
       ctx.stroke();
     }
@@ -71,8 +73,8 @@ function Grid(blockSize, chunks, blocksUp, blocksAcross){
       ctx.strokeStyle = '#222';
       ctx.lineWidth = 0.5;
       ctx.beginPath();
-      ctx.moveTo(game.tileSize * i, 0);
-      ctx.lineTo(game.tileSize * i, game.tileSize * 10);
+      ctx.moveTo(game.tileSize.w * i, 0);
+      ctx.lineTo(game.tileSize.w * i, game.tileSize.h * 10);
       ctx.closePath();
       ctx.stroke();
     }
@@ -97,7 +99,7 @@ function mapReset(){
 
 function mapReload(){
   if (!game.map){ mapLoad(); }
-  if (!game.tileSize){ game.tileSize = 32; }
+  if (!game.tileSize){ game.tileSize = { w: 32 , h: 32 }; }
   var map = game.map;
   var mapWidth;
   mapWidth = map[0][0].length;
@@ -106,8 +108,8 @@ function mapReload(){
     for (var y=0; y<map[0].length; y++){
       for (var x=0; x<map[0][0].length; x++){
         switch( map[i][y][x] ){
-          case 1: platformEngine.add( new MapTile(x, y, i, mapWidth, mapWidth) ); break;
-          case 2: platformEngine.add( new MapSpring(x, y, i, mapWidth, mapWidth) ); break;
+          case 1: platformEngine.add( new MapTile(x, y, game.tileSize.w, game.tileSize.h, i, mapWidth) ); break;
+          case 2: platformEngine.add( new MapSpring(x, y, game.tileSize.w, game.tileSize.h, i, mapWidth) ); break;
         }
       }
     }
@@ -116,46 +118,31 @@ function mapReload(){
 
 function mapGameReload(){
   if (!game.map){ mapLoad(); }
-  if (!game.tileSize){ game.tileSize = 64; }
+  if (!game.tileSize){ game.tileSize =  { w: 60 , h: 50 }; }
 
   var map = game.map;
-  var blockSize = game.tileSize;
+  var blockSizeW = game.tileSize.w;
+  var blockSizeH = game.tileSize.h;
   var mapWidth; 
-  mapWidth = blockSize * map[0][0].length;
-  var px = x*blockSize+i*mapWidth;
-  var py = y*blockSize;
-  var pw = blockSize-2;
-  var ph = blockSize-2;
+  mapWidth = blockSizeW * map[0][0].length;
 
   for (var i=0; i<map.length; i++){
     for (var y=0; y<map[0].length; y++){
       for (var x=0; x<map[0][0].length; x++){
+        var px = x*blockSizeW+i*mapWidth;
+        var py = y*blockSizeH;
+        var pw = blockSizeW-2;
+        var ph = blockSizeH-2;
         switch( map[i][y][x] ){
-          case 1: platformEngine.add( new Platform(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2) ); break;
-          case 2: platformEngine.add( new Spring(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2, 0) ); break;
+          //case 1: platformEngine.add( new Platform(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2) ); break;
+          //case 2: platformEngine.add( new Spring(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2, 0) ); break;
+          case 1: platformEngine.add( new Platform(px, py, pw, ph) ); break;
+          case 2: platformEngine.add( new Spring(px, py, pw, ph, 0) ); break;
         }
       }
     }
   }
 }
-
-/*
-function createMap(){
-  var map = game.map;
-  var mapWidth = map[0][0].length;
-  var tileSize = game.tileSize;
-  for (var chunk=0; chunk<map.length; chunk++){
-    for (var y=0; y<map[0].length; y++){
-      for (var x=0; x<map[0][0].length; x++){
-        switch( map[chunk][y][x] ){
-          case 1: platformEngine.add( new Tiles(x, y, chunk, tileSize, mapWidth) ); break;
-          case 2: platformEngine.add( new Spring(x, y, chunk, tileSize, mapWidth) ); break;
-        }
-      }
-    }
-  }
-}
-*/
 
 function mapClear(){
   var map = game.map;
@@ -175,23 +162,23 @@ function mapClear(){
   }
 }
 
-function mapTileAdd(chunk,y,x,tile){
+function mapTileAdd(chunk,y,x,type){
   var map = game.map;
   var mapWidth = map[0][0].length;
   
   // Update Map
-  game.map[chunk][y][x] = tile;
+  game.map[chunk][y][x] = type;
   
   // Update Game Platforms
-  platformEngine.add( new MapTile(x, y, chunk, mapWidth, mapWidth) );
+  platformEngine.add( new MapTile(x, y, game.tileSize.w, game.tileSize.h, chunk, mapWidth) );
 }
 
 function mapTileRemove(chunk,y,x){
   // Update Map
   game.map[chunk][y][x] = 0;
   
-  var gamex = (x * game.tileSize) + (chunk * game.map[0][0].length * game.tileSize);;
-  var gamey = y * game.tileSize;
+  var gamex = (x * game.tileSize.w) + (chunk * game.map[0][0].length * game.tileSize);;
+  var gamey = y * game.tileSize.h;
 
   // Update Game Platforms
   for (var i=0; i<game.platforms.length; i++){
