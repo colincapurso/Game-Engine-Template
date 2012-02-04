@@ -24,25 +24,8 @@ function drawUI(){
   var clear = { x: p.x+30+220, y: p.y+30, w: 100, h: 30, offset: 2 };
   var reset = { x: p.x+game.width-180, y: p.y+30, w: 100, h: 30, offset: 3 };
   var help = { x: p.x+game.width-40-30, y: p.y+30, w: 40, h: 30, offset: 4 };
-  // var tile0 = { x: p.x + 48 + (96+10)*0, y: p.y + 512, w: 96, h: 96, offset: 0 };
-  /*
-  var imgWidth = 64;
-  var imgHeight = 64;
-  var tile = {
-      x: p.x + 48 + (96+10)*1,
-      y: p.y + 512,
-      w: imgWidth,
-      h: imgHeight,
-      offset: 0 };
-  
-  var tile1 = { x: p.x + 48 + (96+10)*1, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
-  var tile2 = { x: p.x + 48 + (96+10)*2, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
-  var tile3 = { x: p.x + 48 + (96+10)*3, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
-  var tile4 = { x: p.x + 48 + (96+10)*4, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
-  var tile5 = { x: p.x + 48 + (96+10)*5, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
-  var tile6 = { x: p.x + 48 + (96+10)*6, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
-  var tile7 = { x: p.x + 48 + (96+10)*7, y: p.y + 512, w: imgWidth, h: imgHeight, offset: 0 };
-  */
+
+  // Conditions
   var aboveZero = (mchunk >= 0) && (mx >= 0) && (my >= 0);
   var belowMax = (mchunk < game.map.length) && (mx < mapWidth * game.map.length) && (my < game.map[0].length);
   
@@ -64,17 +47,16 @@ function drawUI(){
     var now = Date.now();
     if (now > game.clickTimer+200){
       game.clickTimer = now;
-      if ( isCollide(mouse,clear) ){ mapClear(); }
-        else if ( isCollide(mouse,load) ){ mapLoad(); mapReload(); }
-        else if ( isCollide(mouse,save) ){ mapSave(); mapReload(); }
-        else if ( isCollide(mouse,reset) ){ mapReset(); mapReload(); }
+      if ( isCollide(mouse,save) ){ mapSave(); mapReload(); }
+        else if ( isCollide(mouse,load) ){ mapClear(); mapLoad(); mapReload(); }
+        else if ( isCollide(mouse,clear) ){ mapClear(); }
+        else if ( isCollide(mouse,reset) ){ mapClear(); mapResetDefault(); mapReload(); }
         else if (aboveZero && belowMax){
-          var newMX = mx - mapWidth * mchunk;
-          // var gamex = mx;
-          if ( game.map[mchunk][my][newMX] ){
-            mapTileRemove(mchunk,my,newMX);
+          var newmx = mx - mapWidth * mchunk;
+          if ( game.map[mchunk][my][newmx] ){
+            mapTileRemove(newmx,my,mchunk);
           } else {
-            mapTileAdd(mchunk,my,newMX,1);
+            mapTileAdd(newmx,my,mchunk,1);
           }
         }
     }
@@ -167,13 +149,7 @@ function drawSelectedTileOnGrid(){
     var tileHeight = game.tileSize.h;
     var aboveZero = (cursor.chunk >= 0) && (cursor.x >= 0) && (cursor.y >= 0);
     var belowMax = (cursor.chunk < chunkCount) && (cursor.x < mapWidth * chunkCount) && (cursor.y < mapHeight);
-    /*
-    console.log(
-        'chunk: ' + cursor.chunk + 
-        '| y: ' + cursor.y +
-        '| x: ' + cursor.x
-        );
-        */
+
     if ( aboveZero && belowMax ){
       var type = game.map[cursor.chunk][cursor.y][(cursor.x - mapWidth * cursor.chunk)];
       var mx = Math.floor((latestCoords[0].x + player.x)/tileWidth)*tileWidth;

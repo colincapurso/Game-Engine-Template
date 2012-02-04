@@ -51,51 +51,33 @@ function Spring(x,y,w,h,type){
   };
 }
 
-function MapTile(x,y, w,h, chunk, mapWidth){
-  this.x = x;
-  this.y = y;
-  this.w = w;
-  this.h = h;
+function MapTile(x,y,chunk,type){
+  this.x;
+  this.y;
+  this.w;
+  this.h;
+  this.type = type;
   this.removeFromWorld = false;
-  this.draw = function(ctx){
-    draw(this, ctx, 1);
-  };
   this.baseX = x;
   this.baseY = y;
   this.chunk = chunk;
-  this.mapWidth = mapWidth;
-  
-  this.init = function(){
-    this.x = (this.baseX * game.tileSize.w) + (this.chunk * this.mapWidth * game.tileSize.w);
-    this.y = this.baseY * game.tileSize.h;
-    this.w = game.tileSize.w - 1;
-    this.h = game.tileSize.h - 1;
+  this.mapWidth = game.map[0][0].length;
+  this.draw = function(ctx){
+    switch(this.type){
+      case 1: draw(this, ctx, 1); break;
+      case 2: draw(this, ctx, 2); break;
+    }
   };
-  
-  this.init();
-}
+  this.init = function(){
+    var mapWidth = game.map[0][0].length;
+    var tileWidth = game.tileSize.w;
+    var tileHeight = game.tileSize.h;
 
-function MapSpring(x,y, w,h, chunk, mapWidth){
-  this.x = x;
-  this.y = y;
-  this.w = w;
-  this.h = h;
-  this.removeFromWorld = false;
-  this.draw = function(ctx){
-    draw(this, ctx, 2);
+    this.x = (this.baseX * tileWidth) + (this.chunk * mapWidth * tileWidth);
+    this.y = this.baseY * tileHeight;
+    this.w = tileWidth - 1;
+    this.h = tileHeight - 1;
   };
-  this.baseX = x;
-  this.baseY = y;
-  this.chunk = chunk;
-  this.mapWidth = mapWidth;
-  
-  this.init = function(){
-    this.x = (this.baseX * game.tileSize.w) + (this.chunk * this.mapWidth * game.tileSize.w);
-    this.y = this.baseY * game.tileSize.h;
-    this.w = game.tileSize.w - 2;
-    this.h = game.tileSize.h - 2;
-  };
-  
   this.init();
 }
 
@@ -162,13 +144,13 @@ function Player(x,y,w,h){
 }
 
 function Cursor(){
-  this.x = 0;
-  this.y = 0;
-  this.w = 0;
-  this.h = 0;
-  this.mx = 0;
-  this.my = 0;
-  this.chunk = 0;
+  this.x;
+  this.y;
+  this.w;
+  this.h;
+  this.mx;
+  this.my;
+  this.chunk;
   this.removeFromWorld = false;
   this.last = { x: null, y: null };
   this.update = function(){
@@ -190,18 +172,7 @@ function Cursor(){
 }
 
 // Object Global Functions
-function draw(obj1, ctx, type, where){
-  var obj = obj1;
-  if ( where == 'UI' ){
-    obj = {
-      x: player.x + 20,
-      y: player.y + 20,
-      w: 128,
-      h: 128 };
-      ctx.fillStyle = "#222";
-      ctx.fillRect(obj.x-8, obj.y-8, obj.w+16, obj.h+16);
-      ctx.clearRect(obj.x, obj.y, obj.w, obj.h);
-  }
+function draw(obj, ctx, type){
   switch(type){
     case 1:
       ctx.fillStyle = "brown";

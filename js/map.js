@@ -1,8 +1,3 @@
-var chunk0 = [];
-var chunk1 = [];
-var chunk2 = [];
-var chunk3 = [];
-var chunk4 = [];
 /*
 1 chunk = 16x10
 [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -16,13 +11,6 @@ var chunk4 = [];
 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
 */
-chunk0 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
-chunk1 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
-chunk2 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],[0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],[0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0],[0,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0],[1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],[1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1]];
-chunk3 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,0],[1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
-chunk4 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
-
-var templateMap = [ chunk0,chunk1,chunk2,chunk3,chunk4 ];
 
 function zoom(){
   if ( keysDown['minus'] || keysDown['minus1'] ){
@@ -48,7 +36,7 @@ function zoom(){
   }
 }
 
-function Grid(blockSize, chunks, blocksUp, blocksAcross){
+function GridAndUI(blockSize, chunks, blocksUp, blocksAcross){
   this.x = 0;
   this.y = 0;
   this.last = { x: 0, y: 0 };
@@ -84,34 +72,57 @@ function Grid(blockSize, chunks, blocksUp, blocksAcross){
 
 function mapSave(){
   // Saves to localStorage
-  setMap(game.map);
+  storage.set('map', game.map);
 }
 
 function mapLoad(){
   // Loads from localStorage
-  game.map = getMap();
+  game.map = storage.get('map');
 }
 
-function mapReset(){
-  mapClear();
+function mapResetDefault(){
+  var chunk0 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
+  var chunk1 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
+  var chunk2 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],[0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],[0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0],[0,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0],[1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],[1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1]];
+  var chunk3 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,0],[1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
+  var chunk4 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
   game.map = [ chunk0,chunk1,chunk2,chunk3,chunk4 ];
+}
+
+function mapClear(){
+  var chunkTotal = game.map.length;
+  var mapHeight = game.map[0].length;
+  var mapWidth = game.map[0][0].length;
+
+  // Wipes Map Data
+  for (var chunk=0; chunk < chunkTotal; chunk++){
+    for (var y=0; y < mapHeight; y++){
+      for (var x=0; x < mapWidth; x++){
+        game.map[chunk][y][x] = 0;
+      }
+    }
+  }
+
+  // Wipes Objects from game.platforms
+  for (var i=0; i<game.platforms.length; i++){
+    game.platforms[i].removeFromWorld = true;
+  }
 }
 
 function mapReload(){
   if (!game.map){ mapLoad(); }
   if (!game.tileSize){ game.tileSize = { w: 32 , h: 32 }; }
-  var map = game.map;
-  var mapWidth;
-  var w = game.tileSize.w;
-  var h = game.tileSize.h;
-  mapWidth = map[0][0].length;
 
-  for (var chunk=0; chunk<map.length; chunk++){
-    for (var y=0; y<map[0].length; y++){
-      for (var x=0; x<map[0][0].length; x++){
-        switch( map[chunk][y][x] ){
-          case 1: platformEngine.add( new MapTile(x, y, w, h, chunk, mapWidth) ); break;
-          case 2: platformEngine.add( new MapSpring(x, y, w, h, chunk, mapWidth) ); break;
+  var chunkTotal = game.map.length;
+  var mapHeight = game.map[0].length;
+  var mapWidth = game.map[0][0].length;
+
+  for (var chunk=0; chunk < chunkTotal; chunk++){
+    for (var y=0; y < mapHeight; y++){
+      for (var x=0; x < mapWidth; x++){
+        switch( game.map[chunk][y][x] ){
+          case 1: platformEngine.add( new MapTile(x, y, chunk, 1) ); break;
+          case 2: platformEngine.add( new MapTile(x, y, chunk, 2) ); break;
         }
       }
     }
@@ -136,8 +147,6 @@ function mapGameReload(){
         var pw = blockSizeW-2;
         var ph = blockSizeH-2;
         switch( map[i][y][x] ){
-          //case 1: platformEngine.add( new Platform(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2) ); break;
-          //case 2: platformEngine.add( new Spring(x*blockSize+i*mapWidth, y*blockSize, blockSize-2, blockSize-2, 0) ); break;
           case 1: platformEngine.add( new Platform(px, py, pw, ph) ); break;
           case 2: platformEngine.add( new Spring(px, py, pw, ph, 0) ); break;
         }
@@ -146,33 +155,15 @@ function mapGameReload(){
   }
 }
 
-function mapClear(){
-  var map = game.map;
-
-  // Wipes Map Data
-  for (var chunk=0; chunk<map.length; chunk++){
-    for (var y=0; y<map[0].length; y++){
-      for (var x=0; x<map[0][0].length; x++){
-        game.map[chunk][y][x] = 0;
-      }
-    }
-  }
-
-  // Wipes Objects from game.platforms
-  for (var i=0; i<game.platforms.length; i++){
-    game.platforms[i].removeFromWorld = true;
-  }
-}
-
-function mapTileAdd(chunk,y,x,type){
+function mapTileAdd(x, y, chunk,type){
   // Add new tile to game.map[]
   game.map[chunk][y][x] = type;
   
   // Add new tile to Platform Engine (game.platforms[])
-  platformEngine.add( new MapTile(x, y, game.tileSize.w, game.tileSize.h, chunk, game.map[0][0].length) );
+  platformEngine.add( new MapTile(x, y, chunk, type) );
 }
 
-function mapTileRemove(chunk,y,x){
+function mapTileRemove(x,y,chunk){
   // Remove tile from game.map[]
   game.map[chunk][y][x] = 0;
   
@@ -188,11 +179,4 @@ function mapTileRemove(chunk,y,x){
       game.platforms[i].removeFromWorld = true;
     }
   }
-}
-
-function getMap(){
-  return storage.get('map');
-}
-function setMap(map){
-  storage.set('map', map);
 }

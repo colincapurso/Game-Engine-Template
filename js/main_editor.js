@@ -35,7 +35,7 @@ game.init = function(ctx){
   mapReload();
   
   // DrawUI is in the Grid() object
-  game.addEntity( new Grid(game.tileSize, game.map.length, game.map[0].length, game.map[0][0].length) );
+  game.addEntity( new GridAndUI(game.tileSize, game.map.length, game.map[0].length, game.map[0][0].length) );
 
   game.addEntity( cursor );
   game.zoomTimer = Date.now();

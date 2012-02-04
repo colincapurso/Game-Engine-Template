@@ -9,7 +9,7 @@ ASSET_MANAGER.queueDownload('img/playerPlaceholder.png');
 var game = new GameEngine();
 var platformEngine = new PlatformEngine();
 var player = new Player(3000,100, 54, 84);
-var tileSize = { w: 60 , h: 50 };
+var tileSize = { w: 64 , h: 64 };
 
 game.init = function(ctx){
   game.width = canvas.width;
