@@ -21,7 +21,9 @@ function zoom(){
       game.zoomTimer = now;
       delete keysDown['minus'];
       delete keysDown['minus1'];
-      for (var i=0; i<game.platforms.length; i++){ game.platforms[i].init(); }
+      for (var i=0; i<game.platforms.length; i++){
+        game.platforms[i].reload();
+      }
     }
   } else if ( keysDown['plus'] || keysDown['plus1']){
     var now = Date.now();
@@ -31,7 +33,9 @@ function zoom(){
       game.zoomTimer = now;
       delete keysDown['plus'];
       delete keysDown['plus1'];
-      for (var i=0; i<game.platforms.length; i++){ game.platforms[i].init(); }
+      for (var i=0; i<game.platforms.length; i++){
+        game.platforms[i].reload();
+      }
     }
   }
 }

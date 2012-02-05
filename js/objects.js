@@ -5,17 +5,8 @@ function ObjActive(x,y,w,h){
   this.h = h;
   this.removeFromWorld = false;
   this.last = { x: null, y: null };
-  this.color = 'red';
-  this.update = function(){
-    // Updates here
-  };
-  this.draw = function(){
-    // Draws here
-  };
-  this.clear = function(){
-    // Clears here
-  };
 }
+
 function isCollide(a,b){
   if (a.x <= (b.x + b.w) 
       && b.x <= (a.x + a.w) 
@@ -51,6 +42,17 @@ function MapTile(x,y,chunk,type){
   
   this.draw = function(ctx){
     drawMapTile(ctx, this);
+  };
+  
+  this.reload = function(){
+    var mapWidth = game.map[0][0].length;
+    var tileWidth = game.tileSize.w;
+    var tileHeight = game.tileSize.h;
+    
+    this.x = (this.baseX * tileWidth) + (this.chunk * mapWidth * tileWidth);
+    this.y = this.baseY * tileHeight;
+    this.w = tileWidth - 1;
+    this.h = tileHeight - 1;
   };
 }
 
