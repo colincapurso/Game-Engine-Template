@@ -142,37 +142,32 @@ function drawSelectedTile(ctx, aboveZero, belowMax){
   }
 }
 
-function drawSelectedTileOnGrid(){
+function drawSelectedTileOnGrid(ctx){
   if (game.map){
     var chunkCount = game.map.length;
     var mapHeight = game.map[0].length;
     var mapWidth = game.map[0][0].length;
-    var tileWidth = game.tileSize.w;
-    var tileHeight = game.tileSize.h;
     var aboveZero = (cursor.chunk >= 0) && (cursor.x >= 0) && (cursor.y >= 0);
     var belowMax = (cursor.chunk < chunkCount) && (cursor.x < mapWidth * chunkCount) && (cursor.y < mapHeight);
 
     if ( aboveZero && belowMax ){
       var type = game.map[cursor.chunk][cursor.y][(cursor.x - mapWidth * cursor.chunk)];
+      var tileWidth = game.tileSize.w;
+      var tileHeight = game.tileSize.h;
       var mx = Math.floor((latestCoords[0].x + player.x)/tileWidth)*tileWidth;
       var my = Math.floor((latestCoords[0].y + player.y)/tileHeight)*tileHeight;
 
       switch(type){
-        case 0:
-          game.context.fillStyle = "grey";
-          game.context.fillRect(mx-2, my-2, tileWidth+4, tileHeight+4);
-          break;
-        case 1:
-          // game.context.fillStyle = "brown";
-          game.context.fillStyle = "yellow";
-          game.context.fillRect(mx-2, my-2, tileWidth+4, tileHeight+4);
-          break;
-        case 2:
-          // game.context.fillStyle = "green";
-          game.context.fillStyle = "yellow";
-          game.context.fillRect(mx-2, my-2, tileWidth+4, tileHeight.h+4);
-          break;
+        case 0: ctx.fillStyle = "grey"; break;
+        case 1: ctx.fillStyle = "yellow"; break;
+        case 2: ctx.fillStyle = "yellow"; break;
+        case 3: ctx.fillStyle = "yellow"; break;
+        case 4: ctx.fillStyle = "yellow"; break;
+        case 5: ctx.fillStyle = "yellow"; break;
+        case 6: ctx.fillStyle = "yellow"; break;
+        case 7: ctx.fillStyle = "yellow"; break;
       }
+      ctx.fillRect(mx - 2, my - 2, tileWidth + 4, tileHeight + 4);
     }
   }
 }

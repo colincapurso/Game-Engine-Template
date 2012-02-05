@@ -29,9 +29,9 @@ function drawUI(){
   // Conditions
   var aboveZero = (mchunk >= 0) && (mx >= 0) && (my >= 0);
   var belowMax = (mchunk < game.map.length) && (mx < mapWidth * game.map.length) && (my < game.map[0].length);
+  var inTileArea = latestCoords[0].y > 60 && latestCoords[0].y < game.height - 130;
   
   // Draws
-  drawSelectedTileOnGrid(aboveZero, belowMax);
   drawSelectedTile(ctx, aboveZero, belowMax);
   drawButtons(mouse,save);
   drawButtons(mouse,load);
@@ -39,6 +39,9 @@ function drawUI(){
   drawButtons(mouse,reset);
   drawButtons(mouse,help);
   
+  if ( inTileArea ){
+    drawSelectedTileOnGrid(ctx);
+  }
   drawTileSelectors(mouse,p);
   
   // EVENTS - Check for Mouse/Keyboard zoom input
@@ -47,14 +50,14 @@ function drawUI(){
   if ( isMouseDown ){
     var now = Date.now();
     
-    if (now > game.clickTimer+200){
+    if ( now > game.clickTimer+200 ){
       game.clickTimer = now;
-      
+
       if ( isCollide(mouse,save) ){ mapSave(); mapReload(); }
         else if ( isCollide(mouse,load) ){ mapClear(); mapLoad(); mapReload(); }
         else if ( isCollide(mouse,clear) ){ mapClear(); }
         else if ( isCollide(mouse,reset) ){ mapClear(); mapResetDefault(); mapReload(); }
-        else if (aboveZero && belowMax){
+        else if ( aboveZero && belowMax && inTileArea){
           var newmx = mx - mapWidth * mchunk;
           actionAddRemoveTile(newmx, my, mchunk, game.currentlySelected);
         }
@@ -67,7 +70,7 @@ function drawUI(){
         var x = p.x + xoffset + ( screenTileSize + space ) * (i-1);
         var y = p.y + yoffset;
         var tile = { x: x, y: y, w: screenTileSize, h: screenTileSize };
-        if (isCollide(mouse,tile)){
+        if ( isCollide(mouse,tile) ){
           game.currentlySelected = i;
         }
       }
