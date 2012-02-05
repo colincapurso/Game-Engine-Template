@@ -30,8 +30,8 @@ function Platform(x,y,w,h, type){
 function MapTile(x,y,chunk,type){
   this.x = (x * game.tileSize.w) + (chunk * game.map[0][0].length * game.tileSize.w);
   this.y = y * game.tileSize.h;
-  this.w = game.tileSize.w - 1;
-  this.h = game.tileSize.h - 1;
+  this.w = game.tileSize.w;
+  this.h = game.tileSize.h;
   this.removeFromWorld = false;
 
   this.type = type;
@@ -51,8 +51,8 @@ function MapTile(x,y,chunk,type){
     
     this.x = (this.baseX * tileWidth) + (this.chunk * mapWidth * tileWidth);
     this.y = this.baseY * tileHeight;
-    this.w = tileWidth - 1;
-    this.h = tileHeight - 1;
+    this.w = tileWidth;
+    this.h = tileHeight;
   };
 }
 
@@ -127,7 +127,6 @@ function Cursor(){
       this.my = Math.floor((latestCoords[0].y + player.y)/game.tileSize.h)*game.tileSize.h;
       this.chunk = Math.floor(this.mx/game.tileSize.w/game.map[0][0].length);
       this.x = Math.floor( this.mx/game.tileSize.w );
-      // this.x = Math.floor( this.mx/game.tileSize.w ) - game.map[0][0].length * game.map.length;
       this.y = Math.floor( this.my/game.tileSize.h );
       this.w = game.tileSize.w;
       this.h = game.tileSize.h;

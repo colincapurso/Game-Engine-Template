@@ -20,7 +20,13 @@ game.init = function(ctx){
   
   // Add Images
   player.image = ASSET_MANAGER.getAsset('img/playerPlaceholder.png');
-  
+
+  // Set Images
+  game.img = {
+    buttons: ASSET_MANAGER.getAsset('img/buttons.png'),
+    tiles: ASSET_MANAGER.getAsset('img/tiles.png')
+  };
+
   // Load Map
   game.tileSize = tileSize;
   mapGameReload();

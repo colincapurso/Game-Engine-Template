@@ -20,28 +20,6 @@ function drawGrid(ctx, obj){
   ctx.stroke();
 }
 
-function drawPlatform(ctx, obj){
-  // Extra Features such as Spring Block
-  switch(obj.type){
-    case 2:
-      // Spring Block, set player state to spring if falling on block
-      var p = { x: player.x, y: player.y + player.velocity.y, w: player.w, h: player.h };
-      if ( isCollide(obj, p) ){ player.spring = 0; }
-      break;
-  }
-  // Block Colour
-  switch(obj.type){
-    case 1: ctx.fillStyle = "#9D5F17"; break;
-    case 2: ctx.fillStyle = "#E4B872"; break;
-    case 3: ctx.fillStyle = "FF00FF"; break;
-    case 4: ctx.fillStyle = "ED1C24"; break;
-    case 5: ctx.fillStyle = "F7931E"; break;
-    case 6: ctx.fillStyle = "FCEE21"; break;
-    case 7: ctx.fillStyle = "0071BC"; break;
-  }
-  ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
-}
-
 function drawPlayer(ctx, obj){
   // Body
   ctx.fillStyle = 'orange';
@@ -58,7 +36,58 @@ function drawPlayer(ctx, obj){
   ctx.fillRect(obj.x+45, obj.y+34, 27, 33);
 }
 
+
+function drawPlatform(ctx, obj){
+  var tileWidth = game.img.tiles.width / 3;
+  var tileHeight = tileWidth;
+  // Extra Features such as Spring Block
+  switch(obj.type){
+    case 2:
+      // Spring Block, set player state to spring if falling on block
+      var p = { x: player.x, y: player.y + player.velocity.y, w: player.w, h: player.h };
+      if ( isCollide(obj, p) ){ player.spring = 0; }
+      break;
+  }
+  switch(obj.type){
+    case 0: break;
+    case 1: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*1, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 2: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*2, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 3: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*3, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 4: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*4, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 5: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*5, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 6: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*6, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 7: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*7, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+  }
+
+ /*  // Block Colour
+  switch(obj.type){
+    case 1: ctx.fillStyle = "#9D5F17"; break;
+    case 2: ctx.fillStyle = "#E4B872"; break;
+    case 3: ctx.fillStyle = "FF00FF"; break;
+    case 4: ctx.fillStyle = "ED1C24"; break;
+    case 5: ctx.fillStyle = "F7931E"; break;
+    case 6: ctx.fillStyle = "FCEE21"; break;
+    case 7: ctx.fillStyle = "0071BC"; break;
+  }
+  
+  ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
+  */
+}
+
 function drawMapTile(ctx, obj){
+  var tileWidth = game.img.tiles.width / 3;
+  var tileHeight = tileWidth;
+  switch(obj.type){
+    case 0: break;
+    case 1: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*1, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 2: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*2, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 3: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*3, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 4: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*4, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 5: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*5, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 6: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*6, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+    case 7: ctx.drawImage(game.img.tiles, tileWidth*2, tileHeight*7, tileWidth, tileHeight, obj.x, obj.y, obj.w, obj.h); break;
+  }
+  /* Output Colours
   switch(obj.type){
     case 0: ctx.fillStyle = "#000"; break;
     case 1: ctx.fillStyle = "#9D5F17"; break;
@@ -69,12 +98,13 @@ function drawMapTile(ctx, obj){
     case 6: ctx.fillStyle = "FCEE21"; break;
     case 7: ctx.fillStyle = "0071BC"; break;
   }
-  ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
+  */
+  // ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
 }
 
-function drawTileSelectors(mouse, p){
-  var imgWidth = 64;
-  var imgHeight = 64;
+function drawTileSelectors(ctx, mouse, p){
+  var imgWidth = 96;
+  var imgHeight = 96;
   var screenTileSize = 96;
   var space = 10;
   var xoffset = 64;
@@ -88,14 +118,14 @@ function drawTileSelectors(mouse, p){
     var sw = imgWidth;
     var sh = imgHeight;
     if ( isCollide(mouse,tile) ){ // MouseOver
-      game.context.globalAlpha = 1;
-      game.context.drawImage(game.img.tiles, sx*1, sy, sw, sh, x, y, screenTileSize, screenTileSize);
+      ctx.globalAlpha = 1;
+      ctx.drawImage(game.img.tiles, sx*1, sy, sw, sh, x, y, screenTileSize, screenTileSize);
     } else if(game.currentlySelected == i) { // Selected
-      game.context.globalAlpha = 1;
-      game.context.drawImage(game.img.tiles, sx*2, sy, sw, sh, x, y, screenTileSize, screenTileSize);
+      ctx.globalAlpha = 1;
+      ctx.drawImage(game.img.tiles, sx*2, sy, sw, sh, x, y, screenTileSize, screenTileSize);
     } else { // Not Selected
-      game.context.globalAlpha = 0.2;
-      game.context.drawImage(game.img.tiles, sx*0, sy, sw, sh, x, y, screenTileSize, screenTileSize);
+      ctx.globalAlpha = 0.2;
+      ctx.drawImage(game.img.tiles, sx*0, sy, sw, sh, x, y, screenTileSize, screenTileSize);
     }
   }
 }

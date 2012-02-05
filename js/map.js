@@ -142,8 +142,8 @@ function mapGameReload(){
       for (var x=0; x<map[0][0].length; x++){
         var px = x*blockSizeW+i*mapWidth;
         var py = y*blockSizeH;
-        var pw = blockSizeW-2;
-        var ph = blockSizeH-2;
+        var pw = blockSizeW;
+        var ph = blockSizeH;
         switch( map[i][y][x] ){
           case 1: platformEngine.add( new Platform(px, py, pw, ph, 1) ); break;
           // case 2: platformEngine.add( new Spring(px, py, pw, ph, 0) ); break;

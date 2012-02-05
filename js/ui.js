@@ -42,7 +42,7 @@ function drawUI(){
   if ( inTileArea ){
     drawSelectedTileOnGrid(ctx);
   }
-  drawTileSelectors(mouse,p);
+  drawTileSelectors(ctx, mouse,p);
   
   // EVENTS - Check for Mouse/Keyboard zoom input
   zoom();
