@@ -45,44 +45,66 @@ function drawUI(){
   
   if ( isMouseDown ){
     var now = Date.now();
+    
     if (now > game.clickTimer+200){
       game.clickTimer = now;
+      
       if ( isCollide(mouse,save) ){ mapSave(); mapReload(); }
         else if ( isCollide(mouse,load) ){ mapClear(); mapLoad(); mapReload(); }
         else if ( isCollide(mouse,clear) ){ mapClear(); }
         else if ( isCollide(mouse,reset) ){ mapClear(); mapResetDefault(); mapReload(); }
         else if (aboveZero && belowMax){
           var newmx = mx - mapWidth * mchunk;
-          if ( game.map[mchunk][my][newmx] ){
-            mapTileRemove(newmx,my,mchunk);
-          } else {
-            mapTileAdd(newmx,my,mchunk,1);
-          }
+          actionAddRemoveTile(newmx, my, mchunk, game.currentlySelected);
         }
+      
+      for (var i=1; i<8; i++){
+        var screenTileSize = 96;
+        var space = 10;
+        var xoffset = 170;
+        var yoffset = 512;
+        var x = p.x + xoffset + ( screenTileSize + space ) * (i-1);
+        var y = p.y + yoffset;
+        var tile = { x: x, y: y, w: screenTileSize, h: screenTileSize };
+        if (isCollide(mouse,tile)){
+          game.currentlySelected = i;
+        }
+      }
     }
   }
 }
+
+function actionAddRemoveTile(x,y,chunk, type){
+  if ( game.map[chunk][y][x] ){
+    mapTileRemove(x,y,chunk);
+  } else {
+    mapTileAdd(x,y,chunk,type);
+  }
+}
+
 function drawTileSelectors(mouse, p){
   var imgWidth = 64;
   var imgHeight = 64;
   var screenTileSize = 96;
   var space = 10;
-  var xoffset = 170;
+  var xoffset = 64;
   var yoffset = 512;
-  for (var i=0; i<7; i++){
+  for (var i=1; i<8; i++){
     var x = p.x + xoffset + ( screenTileSize + space ) * i;
     var y = p.y + yoffset;
     var tile = { x: x, y: y, w: screenTileSize, h: screenTileSize };
-    if ( !isCollide(mouse,tile) ){
-      // Normal
-      game.context.drawImage(game.img.tiles, 
-        0, imgHeight*i, imgWidth, imgHeight,
-        x, y, screenTileSize, screenTileSize);
-    } else {
+    if ( isCollide(mouse,tile) ){
       // MouseOver
-      game.context.drawImage(game.img.tiles, 
-        imgWidth, imgHeight*i, imgWidth, imgHeight,
-        x, y, screenTileSize, screenTileSize);
+      game.context.drawImage(game.img.tiles, imgWidth*1, imgHeight*i, imgWidth, imgHeight,
+          x, y, screenTileSize, screenTileSize);
+    } else if(game.currentlySelected == i) {
+      // Selected
+      game.context.drawImage(game.img.tiles, imgWidth*2, imgHeight*i, imgWidth, imgHeight,
+          x, y, screenTileSize, screenTileSize);
+    } else {
+      // Not Selected
+      game.context.drawImage(game.img.tiles, imgWidth*0, imgHeight*i, imgWidth, imgHeight,
+          x, y, screenTileSize, screenTileSize);
     }
   }
 }

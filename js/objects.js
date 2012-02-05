@@ -16,69 +16,69 @@ function ObjActive(x,y,w,h){
     // Clears here
   };
 }
-
-function Platform(x,y,w,h, solid){
+function isCollide(a,b){
+  if (a.x <= (b.x + b.w) 
+      && b.x <= (a.x + a.w) 
+      && a.y <= (b.y + b.h) 
+      && b.y <= (a.y + a.h)){
+    return true;
+  }
+}
+function Platform(x,y,w,h, type){
   this.x = x;
   this.y = y;
   this.w = w;
   this.h = h;
-  this.solid = solid;
+  this.type = type;
   this.removeFromWorld = false;
   this.draw = function(ctx){
-    ctx.fillStyle = "magenta";
-    ctx.fillRect(this.x, this.y, this.w, this.h);
-  };
-}
-
-function Spring(x,y,w,h,type){
-  ObjActive.call( this, x,y,w,h );
-  this.type = type;
-  this.draw = function(ctx){
-    this.hitCheck();
-    ctx.fillStyle = "red";
-    ctx.fillRect(this.x, this.y, this.w, this.h);
-  };
-  this.hitCheck = function(){
-    var playerobj = {
-      x: player.x,
-      y: player.y + player.velocity.y,
-      w: player.w,
-      h: player.h
-    };
-    if ( this.isCollide(this, playerobj) ){
-      player.spring = 0;
+    // Extra Features such as Spring Block
+    switch(this.type){
+      case 2:
+        // Spring Block, set player state to spring if falling on block
+        var p = { x: player.x, y: player.y + player.velocity.y, w: player.w, h: player.h };
+        if ( isCollide(this, p) ){ player.spring = 0; }
+        break;
     }
+    // Block Colour
+    switch(this.type){
+      case 1: ctx.fillStyle = "#9D5F17"; break;
+      case 2: ctx.fillStyle = "#E4B872"; break;
+      case 3: ctx.fillStyle = "FF00FF"; break;
+      case 4: ctx.fillStyle = "ED1C24"; break;
+      case 5: ctx.fillStyle = "F7931E"; break;
+      case 6: ctx.fillStyle = "FCEE21"; break;
+      case 7: ctx.fillStyle = "0071BC"; break;
+    }
+    ctx.fillRect(this.x, this.y, this.w, this.h);
   };
 }
 
 function MapTile(x,y,chunk,type){
-  this.x;
-  this.y;
-  this.w;
-  this.h;
-  this.type = type;
+  this.x = (x * game.tileSize.w) + (chunk * game.map[0][0].length * game.tileSize.w);
+  this.y = y * game.tileSize.h;
+  this.w = game.tileSize.w - 1;
+  this.h = game.tileSize.h - 1;
   this.removeFromWorld = false;
+
+  this.type = type;
   this.baseX = x;
   this.baseY = y;
   this.chunk = chunk;
   this.mapWidth = game.map[0][0].length;
+  
   this.draw = function(ctx){
     switch(this.type){
       case 1: draw(this, ctx, 1); break;
       case 2: draw(this, ctx, 2); break;
+      case 3: draw(this, ctx, 3); break;
+      case 4: draw(this, ctx, 4); break;
+      case 5: draw(this, ctx, 5); break;
+      case 6: draw(this, ctx, 6); break;
+      case 7: draw(this, ctx, 7); break;
     }
   };
-  this.init = function(){
-    var mapWidth = game.map[0][0].length;
-    var tileWidth = game.tileSize.w;
-    var tileHeight = game.tileSize.h;
-
-    this.x = (this.baseX * tileWidth) + (this.chunk * mapWidth * tileWidth);
-    this.y = this.baseY * tileHeight;
-    this.w = tileWidth - 1;
-    this.h = tileHeight - 1;
-  };
-  this.init();
+  console.log(this);
 }
 
 function ObjActive(x,y,w,h){
@@ -174,15 +174,15 @@ function Cursor(){
 // Object Global Functions
 function draw(obj, ctx, type){
   switch(type){
-    case 1:
-      ctx.fillStyle = "brown";
-      ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
-      break;
-    case 2:
-      ctx.fillStyle = "green";
-      ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
-      break;
+    case 1: ctx.fillStyle = "#9D5F17"; break;
+    case 2: ctx.fillStyle = "#E4B872"; break;
+    case 3: ctx.fillStyle = "FF00FF"; break;
+    case 4: ctx.fillStyle = "ED1C24"; break;
+    case 5: ctx.fillStyle = "F7931E"; break;
+    case 6: ctx.fillStyle = "FCEE21"; break;
+    case 7: ctx.fillStyle = "0071BC"; break;
   }
+  ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
 }
 
 function cameraUpdateMovement(){
@@ -294,18 +294,19 @@ function cameraUpdateMovement(){
 
 function playerMovementUpdateDraw(){
   this.velocity = { x: 0, y: 0 };
-  this.maxVelocity = { x: 20, y: 30 }; // this.maxVelocity.y == jump power
+  this.maxVelocity = { x: 20, y: 20 }; // this.maxVelocity.y == jump power
   this.acceleration = { x: 0.5 };
   this.decceleration = { x: 0.5 };
   this.friction = { x: 0.5, y: 0 };
-  this.gravity = 2;
-  
+  this.gravity = 1.5;
+
   this.canJump = true;
   this.onGround = true;
   this.canMove = true;
   this.spring = false;
 
   this.state = 'isLanded';
+  this.currentAnimation = 'standing';
 
   this.move = function(dir){
     var v = this.velocity.x * dir;
@@ -397,6 +398,8 @@ function playerMovementUpdateDraw(){
       this.velocity.x = 0;
     }
     
+    // Spring Jump
+    // Collision detection is in the block itself
     if (this.spring === 0){
       this.velocity.y = -this.maxVelocity.y * 1.5;
       this.onGround = false;
@@ -452,29 +455,22 @@ function playerMovementUpdateDraw(){
     // Shield
     game.context.fillStyle = '#CCC';
     game.context.fillRect(this.x+45, this.y+34, 27, 33);
-
-    // game.context.drawImage(this.image, this.x, this.y, this.w, this.h);
   };
 }
 
-
-/*
-function ObjClear(){
-  if (this.last.x && this.last.y){
-     var x = (0.5 + this.last.x) | 0; // Bitwise rounding hack
-     var y = (0.5 + this.last.y) | 0; // Bitwise rounding hack
-     var padding = 20;
-     game.context.clearRect(
-                   x - padding,
-                   y - padding,
-                   this.w + padding + padding,
-                   this.h + padding + padding
-                   );
-  }
-}
-
-function ObjDraw(){
-// var x = (0.5 + this.x) | 0; // Bitwise rounding hack
-// var y = (0.5 + this.y) | 0; // Bitwise rounding hack
-}
+/* CHARACTER DRAWS
+// Body
+game.context.fillStyle = 'orange';
+game.context.fillRect(this.x, this.y, this.w, this.h);
+// Sword
+game.context.fillStyle = '#CCC';
+game.context.fillRect(this.x-12, this.y-12, 18, 45);
+game.context.fillStyle = 'darkgreen';
+game.context.fillRect(this.x-18, this.y+33, 30, 9);
+game.context.fillStyle = 'orange';
+game.context.fillRect(this.x-12, this.y+42, 18, 13);
+// Shield
+game.context.fillStyle = '#CCC';
+game.context.fillRect(this.x+45, this.y+34, 27, 33);
 */
+// game.context.drawImage(this.image, this.x, this.y, this.w, this.h);

@@ -25,9 +25,9 @@ game.init = function(ctx){
   game.addEntity( player );
   game.camera = { x: 500, y: 150, obj: player };
   
-  // Assign Images
+  // Add Images
   player.image = ASSET_MANAGER.getAsset('img/playerPlaceholder.png');
-
+  
   // Load Map
   game.tileSize = tileSize;
   mapGameReload();

@@ -20,6 +20,7 @@ game.init = function(ctx){
   game.height = canvas.height;
   game.context = ctx;
   game.platforms = [];
+  game.currentlySelected = 1;
   
   // Event Listeners
   keyListener();
