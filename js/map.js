@@ -77,7 +77,12 @@ function mapSave(){
 
 function mapLoad(){
   // Loads from localStorage
-  game.map = storage.get('map');
+  var map = storage.get('map');
+  if ( !map ) {
+    mapResetDefault();
+  } else {
+    game.map = map;
+  } 
 }
 
 function mapResetDefault(){

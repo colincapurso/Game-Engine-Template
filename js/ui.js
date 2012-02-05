@@ -93,18 +93,19 @@ function drawTileSelectors(mouse, p){
     var x = p.x + xoffset + ( screenTileSize + space ) * i;
     var y = p.y + yoffset;
     var tile = { x: x, y: y, w: screenTileSize, h: screenTileSize };
-    if ( isCollide(mouse,tile) ){
-      // MouseOver
-      game.context.drawImage(game.img.tiles, imgWidth*1, imgHeight*i, imgWidth, imgHeight,
-          x, y, screenTileSize, screenTileSize);
-    } else if(game.currentlySelected == i) {
-      // Selected
-      game.context.drawImage(game.img.tiles, imgWidth*2, imgHeight*i, imgWidth, imgHeight,
-          x, y, screenTileSize, screenTileSize);
-    } else {
-      // Not Selected
-      game.context.drawImage(game.img.tiles, imgWidth*0, imgHeight*i, imgWidth, imgHeight,
-          x, y, screenTileSize, screenTileSize);
+    var sx = imgWidth;
+    var sy = imgHeight*i;
+    var sw = imgWidth;
+    var sh = imgHeight;
+    if ( isCollide(mouse,tile) ){ // MouseOver
+      game.context.globalAlpha = 1;
+      game.context.drawImage(game.img.tiles, sx*1, sy, sw, sh, x, y, screenTileSize, screenTileSize);
+    } else if(game.currentlySelected == i) { // Selected
+      game.context.globalAlpha = 1;
+      game.context.drawImage(game.img.tiles, sx*2, sy, sw, sh, x, y, screenTileSize, screenTileSize);
+    } else { // Not Selected
+      game.context.globalAlpha = 0.2;
+      game.context.drawImage(game.img.tiles, sx*0, sy, sw, sh, x, y, screenTileSize, screenTileSize);
     }
   }
 }
