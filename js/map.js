@@ -48,25 +48,8 @@ function GridAndUI(blockSize, chunks, blocksUp, blocksAcross){
 	  // Updates not required for grid
   };
   this.draw = function(ctx){
-    for (var i=0; i < this.blocksUp+1; i++){
-      ctx.strokeStyle = '#222';
-      ctx.lineWidth = 0.5;
-      ctx.beginPath();
-      ctx.moveTo(0, game.tileSize.h * i);
-      ctx.lineTo(this.chunks * this.blocksAcross * game.tileSize.w, game.tileSize.h * i);
-      ctx.closePath();
-      ctx.stroke();
-    }
-    for (var i=0; i < this.chunks*this.blocksAcross+1; i++){
-      ctx.strokeStyle = '#222';
-      ctx.lineWidth = 0.5;
-      ctx.beginPath();
-      ctx.moveTo(game.tileSize.w * i, 0);
-      ctx.lineTo(game.tileSize.w * i, game.tileSize.h * 10);
-      ctx.closePath();
-      ctx.stroke();
-    }
-    drawUI();
+    drawGrid(ctx, this);
+    drawUI(ctx);
   };
 }
 
