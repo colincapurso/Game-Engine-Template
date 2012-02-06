@@ -246,11 +246,11 @@ function cameraUpdateMovement(){
 
 function playerMovementUpdateDraw(){
   this.velocity = { x: 0, y: 0 };
-  this.maxVelocity = { x: 20, y: 20 }; // this.maxVelocity.y == jump power
+  this.maxVelocity = { x: 10  , y: 15 }; // this.maxVelocity.y == jump power
   this.acceleration = { x: 0.5 };
   this.decceleration = { x: 0.5 };
   this.friction = { x: 0.5, y: 0 };
-  this.gravity = 1.5;
+  this.gravity = .75;
 
   this.canJump = true;
   this.onGround = true;
@@ -300,14 +300,6 @@ function playerMovementUpdateDraw(){
     this.last.x = this.x;
   };
   this.update = function(){
-    document.getElementById('output').innerHTML =
-      'this.onGround ' + this.onGround + '<br/>' +
-      'this.canJump ' + this.canJump + '<br/>' +
-      'this.canMove ' + this.canMove + '<br/>' +
-      'this.isSpring ' + this.isSpring + '<br/>' +
-      'x ' + this.x + '<br/>' +
-      'y ' + this.y;
-    
     this.setLastPosition();
     
     // On Ground Check
